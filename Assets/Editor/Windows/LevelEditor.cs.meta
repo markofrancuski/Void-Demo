@@ -1,0 +1,33 @@
+fileFormatVersion: 2
+guid: 8a689689cdd3cabeebf78ebb706cfc55
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - m_ViewDataDictionary: {instanceID: 0}
+  - platformNormalSprite: {instanceID: 0}
+  - platformBreakableSprite: {instanceID: 0}
+  - platformHaySprite: {instanceID: 0}
+  - platformSpikeSprite: {instanceID: 0}
+  - platformSlideSprite: {instanceID: 0}
+  - platformSlimeSprite: {instanceID: 0}
+  - platformDoubleSprite: {instanceID: 0}
+  - coinSprite: {instanceID: 0}
+  - heartSprite: {instanceID: 0}
+  - weaponSprite: {instanceID: 0}
+  - platformNormalTexture: {instanceID: 0}
+  - platformBreakableTexture: {instanceID: 0}
+  - platformHayTexture: {instanceID: 0}
+  - platformSpikeTexture: {instanceID: 0}
+  - platformSlideTexture: {instanceID: 0}
+  - platformSlimeTexture: {instanceID: 0}
+  - platformDoubleTexture: {instanceID: 0}
+  - coinTexture: {instanceID: 0}
+  - heartTexture: {instanceID: 0}
+  - weaponTexture: {instanceID: 0}
+  - defaultTexture: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
