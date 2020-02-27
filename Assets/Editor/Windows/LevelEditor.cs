@@ -12,7 +12,6 @@ public class LevelEditor : EditorWindow
     private string levelName = "Level";
     private bool isInEditMode;
 
-    //private Vector3 spaceBetweenPlatforms;
     private GameObject parentObject;
     private GameObject testObject;
 
@@ -79,9 +78,6 @@ public class LevelEditor : EditorWindow
     #endregion
 
     #region Drop Down Variables
-    /* private bool isPlatformClick = false;
-     private bool isPickableClick = false;
-     private int selectedPlatformIndex;*/
     private PlatformType selectedPlatformType;
     private PickableType selectedPickableType;
     #endregion
@@ -147,7 +143,6 @@ public class LevelEditor : EditorWindow
         levelNumber = Directory.GetFiles(@"Assets/Prefabs/Level", "*.prefab").Length + 1;
         selectedPlatformType = PlatformType.NONE;
         selectedPickableType = PickableType.NONE;
-        //spaceBetweenPlatforms = new Vector3(1 , 1, 0);
         numberOfHearts = 0;
         numberOfMoves = 0;
         spawnTim = true;
@@ -164,13 +159,9 @@ public class LevelEditor : EditorWindow
     {
 
         #region Input Fields
-        //Counts the number of level prefabs and displays it.
-        //levelNumber = Directory.GetFiles(@"Assets" + saveLevelPath, "*.prefab").Length + 1;
-        //GUILayout.Label($"Next Number of the Level is: { levelNumber }");
         gridSize = EditorGUILayout.IntField("Enter Grid Size" ,gridSize);
         //saveLevelPath = EditorGUILayout.TextField(new GUIContent("Enter Path to Save", "Do not add Assets infront its already added when saving") ,saveLevelPath);
         levelName = EditorGUILayout.TextField("Enter the Prefab name", levelName);
-        //spaceBetweenPlatforms = EditorGUILayout.Vector3Field("Enter the desired space between platforms",  spaceBetweenPlatforms);
 
         selectedPlatformType = (PlatformType) EditorGUILayout.EnumPopup("Select Platform Type ", selectedPlatformType);
         selectedPickableType = (PickableType) EditorGUILayout.EnumPopup("Select Pickable Type ", selectedPickableType);
@@ -184,11 +175,11 @@ public class LevelEditor : EditorWindow
             numberOfMoves = EditorGUILayout.IntField("Enter number of moves", numberOfMoves);
 
             spawnTim = EditorGUILayout.Toggle("Spawn Tim?", spawnTim);
-
             timSP = EditorGUILayout.Vector2Field("Tim Spawn Position", timSP);
 
             spawnAnnie = EditorGUILayout.Toggle("Spawn Annie?", spawnAnnie);
             annieSP = EditorGUILayout.Vector2Field("Annie Spawn Position", annieSP);
+
             EditorGUILayout.Space();
         }
         else
@@ -201,12 +192,7 @@ public class LevelEditor : EditorWindow
 
         #region Buttons
         GUI.color = Color.cyan;
-        if(GUILayout.Button("Load Level to Edit"))
-        {
-            //CheckLevelNumber();
-            //CheckMissingLevelNumber();
-            TestLoadPrefab("Level 1");
-        }
+        if(GUILayout.Button("Load Level to Edit")) TestLoadPrefab("Level 1");
 
         GUI.color = Color.yellow;
         //Spawn Level Button
@@ -230,55 +216,13 @@ public class LevelEditor : EditorWindow
 
         GUI.color = Color.green;
         //Clears out the dictionary
-        if(GUILayout.Button("Reset Grid"))
-        {
-            dictionary.Clear();
-        }
+        if(GUILayout.Button("Reset Grid")) dictionary.Clear();
         GUI.color = Color.white;
 
         #endregion
 
         //Creates the grid
         CreateGrid(gridSize, 25, 25, 50, 400, "Level Grid", 25);
-        #region Deprecated
-        // Shows the drop down menu to select the platform type
-        /*if(isPlatformClick)
-        {      
-            selectedPlatformType = dictionary[selectedPlatformIndex].GetPlatformType();
-
-            GUI.Box(new Rect(150, 400, 200, 50), "Platform Selection");
-            selectedPlatformType = (PlatformType) EditorGUI.EnumPopup(new Rect(150, 420, 200, 50),"Select Platform", selectedPlatformType);
-
-            //selectedPlatformType = (PlatformType) EditorGUILayout.EnumPopup("Select Platform", selectedPlatformType);
-
-            if (dictionary[selectedPlatformIndex].GetPlatformType() != selectedPlatformType)
-            {
-                dictionary[selectedPlatformIndex].ChangePlatform(selectedPlatformType);
-
-                isPlatformClick = false;
-                //Debug.Log("Changed: " + selectedPlatformType);
-                //Debug.Log(selectedPlatformIndex);   
-            }
-        }
-
-        // Shows the drop down menu to selcet the pickable type
-        if(isPickableClick)
-        {
-            selectedPickableType = dictionary[selectedPlatformIndex].GetPickableType();
-
-            GUI.Box(new Rect(150, 400, 200, 50), "Pickable Selection");
-            selectedPickableType = (PickableType) EditorGUI.EnumPopup(new Rect(150, 420, 200, 50),"Select Pickable", selectedPickableType);
-
-            //selectedPickableType = (PickableType) EditorGUILayout.EnumPopup("Select Pickable", selectedPickableType);
-
-            if(dictionary[selectedPlatformIndex].GetPickableType() != selectedPickableType)
-            {
-                dictionary[selectedPlatformIndex].ChangePickable(selectedPickableType);
-                isPickableClick = false;
-            }
-        }
-        */
-        #endregion
     }
 
     private void CreateGrid(int gridSize, float buttonSize, float spaceBetween, float posX, float posY, string boxName, float boxOffset)
@@ -303,30 +247,14 @@ public class LevelEditor : EditorWindow
                 {
                     if (GUI.Button(new Rect(initialPosX, initialPosY + boxSize2 / 2 - 20, buttonSize*3, buttonSize), GetPickableTexture(dictionary[buttonIndex].GetPickableType())))
                     {
-                        //if(isPlatformClick) isPlatformClick = false;
-
-                        //selectedPlatformIndex = buttonIndex;
-                        //dictionary[buttonIndex].ChangePickable(selectedPickableType);
-                        //isPickableClick = true;
-
-                        if (selectedPickableType == PickableType.NONE && dictionary[buttonIndex].GetPlatformType() == PlatformType.NONE)
-                        {
-                            dictionary.Remove(buttonIndex);
-                        }
-                        else
-                        {
-                            dictionary[buttonIndex].ChangePickable(selectedPickableType);
-                        }
+                        if (selectedPickableType == PickableType.NONE && dictionary[buttonIndex].GetPlatformType() == PlatformType.NONE)  dictionary.Remove(buttonIndex);
+                        else dictionary[buttonIndex].ChangePickable(selectedPickableType);
                     }
                 }
                 else
                 {
                     if (GUI.Button(new Rect(initialPosX, initialPosY + boxSize2 / 2 - 20, buttonSize*3, buttonSize), GetDefaultTexture()))
-                    {
-                        dictionary[buttonIndex] = new PlatformInfo(i, j, PlatformType.NONE, selectedPickableType);
-                        //selectedPlatformIndex = buttonIndex;
-                        //isPickableClick = true;
-                    }
+                        dictionary[buttonIndex] = new PlatformInfo(i, j, PlatformType.NONE, selectedPickableType);                 
                 }
 
                 //Platform Button
@@ -334,32 +262,15 @@ public class LevelEditor : EditorWindow
                 {
                     if(GUI.Button(new Rect(initialPosX + boxSize2 / 2 - 41, initialPosY + boxSize2 / 2 + 5, buttonSize * 3, buttonSize), GetPlatformTexture(dictionary[buttonIndex].GetPlatformType()) ))
                     {
-                        //if(isPickableClick) isPickableClick = false;
-                        
-                        //selectedPlatformIndex = buttonIndex;
-                        //dictionary[buttonIndex].ChangePlatform(selectedPlatformType);
-                        //isPlatformClick = true;
 
-                        if (selectedPlatformType == PlatformType.NONE && dictionary[buttonIndex].GetPickableType() == PickableType.NONE)
-                        {
-                            dictionary.Remove(buttonIndex);
-                        }
-                        else
-                        {
-                            dictionary[buttonIndex].ChangePlatform(selectedPlatformType);
-                        }
+                        if (selectedPlatformType == PlatformType.NONE && dictionary[buttonIndex].GetPickableType() == PickableType.NONE) dictionary.Remove(buttonIndex);
+                        else dictionary[buttonIndex].ChangePlatform(selectedPlatformType);
                     }
                 }
                 else
-                {
-                   
+                {                  
                     if (GUI.Button(new Rect(initialPosX + boxSize2 / 2 - 41, initialPosY + boxSize2 / 2 + 5, buttonSize * 3, buttonSize), GetDefaultTexture()))
-                    {
-
                         dictionary[buttonIndex] = new PlatformInfo(i, j, selectedPlatformType, PickableType.NONE);
-                        //isPlatformClick = true;
-                        //selectedPlatformIndex = buttonIndex;
-                    }
                 }
 
                 initialPosX += buttonSize + spaceBetween + boxSize2 / 2;
@@ -369,37 +280,14 @@ public class LevelEditor : EditorWindow
             initialPosX = posX;
         }
         GUI.color = Color.white;
-
     }
 
     private void SpawnLevel()
     {
-
         parentObject = new GameObject();
-        parentObject.name = levelName; //"Level " + levelNumber;
+        parentObject.name = levelName; 
 
         parentObject.transform.position = Vector3.zero;
-
-        #region Deprecated
-        /*foreach(KeyValuePair<int, PlatformInfo> kvp in dictionary)
-        {
-            GameObject pickable = resource.GetPickablePrefab(kvp.Value.GetPickableType());
-            GameObject platform = resource.GetPlatformPrefab(kvp.Value.GetPlatformType());
-            Vector3 offset = new Vector3(0, 0 ,0);
-            
-            //Adds offset based on the position of the platform
-            if(kvp.Value.GetPositionX() > 0) offset += new Vector3(spaceBetweenPlatforms.x*kvp.Value.GetPositionX(), 0, 0);
-            if(kvp.Value.GetPositionY() > 0) offset += new Vector3(0, -spaceBetweenPlatforms.y*kvp.Value.GetPositionY(), 0);
-
-            if(platform != null) Instantiate(platform, kvp.Value.GetPosition(false)+ offset, Quaternion.identity, parentObject.transform);
-            if(pickable != null) Instantiate(pickable, kvp.Value.GetPosition(true)+ offset, Quaternion.identity, parentObject.transform);         
-        }
-
-        PrefabUtility.SaveAsPrefabAsset(parentObject, saveLevelPath + parentObject.name+ ".prefab");
-        GameObject.DestroyImmediate(parentObject);
-        */
-        #endregion
-
         //Adding Script
         parentObject.AddComponent<Level>();
         parentObject.GetComponent<Level>().SpawnPlayers = true;
@@ -426,26 +314,18 @@ public class LevelEditor : EditorWindow
                     gm.gameObject.transform.GetChild(1).GetComponent<SpriteRenderer>().sprite = GetPlatformSprite(platformType);
                     gm.gameObject.transform.GetChild(1).gameObject.SetActive(true);
                     AttachPlatformScript(platformType, gm.gameObject.transform.GetChild(1).gameObject);
-                    //gm.gameObject.tag = "Platform";
-
-
                 }
-                else
-                {
-                    gm.gameObject.transform.GetChild(1).gameObject.SetActive(false);
-                }
+                else gm.gameObject.transform.GetChild(1).gameObject.SetActive(false);
+
                 PickableType pickableType = dictionary[i + 1].GetPickableType();
                 if (pickableType != PickableType.NONE)
                 {
                     gm.gameObject.transform.GetChild(0).GetComponent<SpriteRenderer>().sprite = GetPickableSprite(pickableType);
                     gm.gameObject.transform.GetChild(0).gameObject.SetActive(true);
                     AttachInteractableScript(pickableType, gm.gameObject.transform.GetChild(0).gameObject);
+                }
+                else gm.gameObject.transform.GetChild(0).gameObject.SetActive(false);
 
-                }
-                else
-                {
-                    gm.gameObject.transform.GetChild(0).gameObject.SetActive(false);
-                }
             }
             else
             {
@@ -463,10 +343,6 @@ public class LevelEditor : EditorWindow
 
         if (spawnAnnie) prefabs = new GameObject[] { movingEnemyPrefab, explodingEnemyPrefab, shootingEnemyPrefab, timPrefab, anniePrefab };
         else prefabs = new GameObject[] { movingEnemyPrefab, explodingEnemyPrefab, shootingEnemyPrefab, timPrefab };
-
-        //Default path if non is provided
-        /*if (saveLevelPath == "") saveLevelPath = "Prefabs/";
-        else if (saveLevelPath[saveLevelPath.Length - 1] != '/') saveLevelPath += "/";*/
 
         if(isBossLevel)
         {
@@ -669,33 +545,6 @@ public class LevelEditor : EditorWindow
     
     private int[] levelNumbersToCheck;
 
-   /* private void CheckMissingLevelNumber()
-    {
-        
-        Debug.Log(Application.dataPath + saveLevelPath);
-        DirectoryInfo dir = new DirectoryInfo(Application.dataPath + "/" + saveLevelPath);
-        FileInfo[] info = dir.GetFiles("*.prefab");
-
-        int[] levelNumbersToCheck;
-        levelNumbersToCheck = new int[info.Length];
-        int index = 0;
-
-        foreach (FileInfo f in info)
-        {
-            Debug.Log(f.Name);
-            Debug.Log(f.Name.Split('.')[1]);
-
-            int.TryParse(f.Name.Split('.')[1].Split(' ')[1], out levelNumbersToCheck[index]);
-            index++;
-
-        }
-
-        for (int i = 0; i < levelNumbersToCheck.Length; i++)
-        {
-            Debug.Log(levelNumbersToCheck[i]);
-        }
-    }*/
-
     private void TestLoadPrefab(string prefabName)
     {
         if (!levelToLoad) return;
@@ -794,15 +643,15 @@ public class LevelEditor : EditorWindow
     }
 
     #endregion
-
 }
+
 public class PlatformInfo 
 {
-
     private int posX;
     private int posY;
     private PlatformType platformType;
     private PickableType pickableType;  
+
     public PlatformInfo( int posX, int posY, PlatformType platformType, PickableType pickableType)
     {
         this.posX = posY;
@@ -840,6 +689,4 @@ public class PlatformInfo
     {
         return "( " + posX  + "," + posY + " ) Is Type : " + platformType.ToString() + " and Has picklable: " + pickableType.ToString();
     }
-
-
 }

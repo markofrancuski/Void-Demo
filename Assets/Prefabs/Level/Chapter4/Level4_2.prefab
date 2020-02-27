@@ -201,14 +201,16 @@ MonoBehaviour:
   - {fileID: 7380062014062006277}
   - {fileID: 6748298606890946697}
   - {fileID: 4820881649412382011}
+  ToogleLevelInfo: 1
   maxMoves: 50
   heartsToCollect: 2
   _gridSize: 5
-  timObject: {fileID: 3755409253481136197, guid: 94c7a825c88d5db459b6980eb3b23a3b,
+  timObject: {fileID: 2483795446570506148, guid: ca5ebad7b4ae5f64e9db7995575de6f3,
     type: 3}
   annieObject: {fileID: 0}
   timSP: {x: 0, y: 0}
   annieSP: {x: 0, y: 0}
+  ToogleDebugStuff: 1
   isTestLevel: 0
   SpawnPlayers: 1
   isDoubleLevel: 0
@@ -3412,10 +3414,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
-  controller: {fileID: 0}
+  _controller: {fileID: 0}
   triggerCollider: {fileID: 0}
+  _playerPosition: {fileID: 0}
+  IsMovingLevel: 0
+  platformLocation: 0
+  _rigidbody: {fileID: 0}
+  _direction: {x: 0, y: 0, z: 0}
   distanceFromUpperPlatform: 0
   distanceFromUnderneathPlatfrom: 0
+  isPositioned: 0
 --- !u!1 &4776329608248925977
 GameObject:
   m_ObjectHideFlags: 0
@@ -7285,10 +7293,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
-  controller: {fileID: 0}
+  _controller: {fileID: 0}
   triggerCollider: {fileID: 0}
+  _playerPosition: {fileID: 0}
+  IsMovingLevel: 0
+  platformLocation: 0
+  _rigidbody: {fileID: 0}
+  _direction: {x: 0, y: 0, z: 0}
   distanceFromUpperPlatform: 0
   distanceFromUnderneathPlatfrom: 0
+  isPositioned: 0
 --- !u!1 &8946686081076602391
 GameObject:
   m_ObjectHideFlags: 0

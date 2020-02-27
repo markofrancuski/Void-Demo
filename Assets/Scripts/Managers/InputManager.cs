@@ -32,10 +32,16 @@ public class InputManager : Singleton<InputManager>
 
     #endregion
 
+    [SerializeField] private bool pauseGame = false;
     // Update is called once per frame
     void Update() // Maybe fixedUpdate
     {
-        
+        if(Input.GetKeyUp(KeyCode.M))
+        {
+            pauseGame = !pauseGame;
+            if (pauseGame) Time.timeScale = 0f;
+            else Time.timeScale = 1f;
+        }
         if (!isControllable) return;
 
 #if UNITY_EDITOR

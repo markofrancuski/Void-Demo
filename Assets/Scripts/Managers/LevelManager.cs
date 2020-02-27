@@ -6,6 +6,7 @@ using TMPro;
 using Pixelplacement;
 using UnityEngine.SceneManagement;
 using MEC;
+using UnityEngine.Events;
 
 public class LevelManager : MonoBehaviour
 {
@@ -25,13 +26,13 @@ public class LevelManager : MonoBehaviour
     public delegate void OnLevelBuildingFinishedEventHandler();
     public static event OnLevelBuildingFinishedEventHandler LevelFinishedBuilding;
 
+    public static event UnityAction<float, float> OnHeartCollected;
     #endregion
 
     public bool IsBossLevel;
     public int bossLevelIndex;
     [SerializeField] private GameObject bossPrefab;
     [SerializeField] private GameObject timPrefab;
-
 
     public Boss bossScript;
     [SerializeField] private Image _bossHealthImage;
@@ -69,6 +70,8 @@ public class LevelManager : MonoBehaviour
         {
             heartToCollect = value;
             tempHeartToCollect = value;
+            _fillIncrementMovePos = -0.57f / HeartToCollect;
+            _fillIncrement = 1.06641f / tempHeartToCollect;
             UpdateHearts();
         }
     }
@@ -86,6 +89,8 @@ public class LevelManager : MonoBehaviour
     #endregion
 
     public int Players;
+    [SerializeField] private float _fillIncrement;
+    [SerializeField] private float _fillIncrementMovePos;
 
     #region Unity Functions
 
@@ -110,11 +115,9 @@ public class LevelManager : MonoBehaviour
         }
         else
         {
+
             Globals.Instance.SpawnCurrentLevel(); 
-
             tempMaxMoves = maxMoves;
-            tempHeartToCollect = heartToCollect;
-
             UpdateMoves();
             UpdateHearts();
 
@@ -204,8 +207,10 @@ public class LevelManager : MonoBehaviour
     {
 
         //Debug.Log("Heart Collected!");
-        tempHeartToCollect--;      
-        if(tempHeartToCollect <= 0 && tempMaxMoves >= 0)
+        tempHeartToCollect--;
+        //Notify player filler to fill up body.
+        OnHeartCollected?.Invoke(_fillIncrement, _fillIncrementMovePos);
+        if (tempHeartToCollect <= 0 && tempMaxMoves >= 0)
         {
             LevelFinished();
             //Switch to the next level/chapter
@@ -248,6 +253,7 @@ public class LevelManager : MonoBehaviour
         //To reverse Tim controlls index is 0, for Annie its 1.
         if(!players[index].isMovementReversed) players[index].isMovementReversed = true;
         else players[index].isMovementReversed = false;
+        Debug.Log($"Reverse: {players[index].isMovementReversed}");
     }
     public void SubscribePlayer(int index, Person person)
     {

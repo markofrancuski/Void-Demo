@@ -1,12 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 //State Machine
 public enum PersonState { IDLE, MOVING, DEAD, INTERACTING, STUNNED };
 
 public class Person : MonoBehaviour
 {
+    public event UnityAction OnPlayerDeath;
 
     #region COMPONENTS
     [Header("SUPER-CLASS")]
@@ -209,6 +211,7 @@ public class Person : MonoBehaviour
 
     #region HELPER FUNCTIONS
 
+    /// NE RADI REVERSE JER NIJE POZVAN NIGDE
     private string GetReversedMovement(string movement)
     {
         switch (movement)

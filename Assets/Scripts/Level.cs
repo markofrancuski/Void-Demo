@@ -68,8 +68,8 @@ public class Level : MonoBehaviour
         if (!isTestLevel && !isDoubleLevel)
         {
             Globals.Instance.levelGO = gameObject;
-            LevelManager.Instance.MaxMoves = maxMoves;
             LevelManager.Instance.HeartToCollect = heartsToCollect;
+            LevelManager.Instance.MaxMoves = maxMoves;
             LevelManager.Instance.Players = 0;
         }
 

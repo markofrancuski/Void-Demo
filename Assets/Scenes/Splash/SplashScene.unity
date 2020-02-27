@@ -1226,6 +1226,7 @@ MonoBehaviour:
   - levels:
     - {fileID: 5734792148209558081, guid: 57982f7f9a5b0a348b4e71ee901a3f64, type: 3}
     - {fileID: 355749524851073448, guid: e0fd8c583a5a83e4591ca910866b6a0a, type: 3}
+    - {fileID: 4107860046874168591, guid: 761b645bfe7b0f4448fc6c444620feb1, type: 3}
   - levels:
     - {fileID: 0}
   - levels:
@@ -1281,6 +1282,7 @@ MonoBehaviour:
   _dontDestroyOnLoad: 1
   swipeSensitivity: 0.8
   isControllable: 0
+  pauseGame: 0
   isPressed: 0
   startPos: {x: 0, y: 0, z: 0}
   endPos: {x: 0, y: 0, z: 0}

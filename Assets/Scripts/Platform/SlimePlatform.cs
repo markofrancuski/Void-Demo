@@ -8,6 +8,9 @@ public class SlimePlatform : BasePlatform
     public int waitForTurnsAmount;
     [SerializeField] private List<int> numberOfMoves = new List<int>();
 
+    private delegate void testdel();
+    testdel del;
+
     public override void Interact(Person controller)
     {
         if (controller.isFrozen) return;
@@ -51,7 +54,9 @@ public class SlimePlatform : BasePlatform
         numberOfMoves.Add(waitForTurnsAmount);
 
         int indexList = numberOfMoves.Count - 1;
+        PlayerController pc = (PlayerController) controller;
 
+        del = pc.SlimeStuck;
         Timing.RunCoroutine(_WaitForSwipes(indexList, controller).
             CancelWith(gameObject), $"Freeze{controller.personIndex}");
     }
@@ -65,6 +70,7 @@ public class SlimePlatform : BasePlatform
         controller.UnFreezePlayer();
         Timing.KillCoroutines($"Freeze{controller.personIndex}");
         InputManager.OnSwipedEvent -= OnSwiped;
+        del = null;
         if (IsListEmpty()) numberOfMoves.Clear();
 
     }
@@ -73,6 +79,8 @@ public class SlimePlatform : BasePlatform
     private void OnSwiped(string str)
     {
         if (numberOfMoves.Count <= 0) return;
+
+        del();
 
         Debug.Log("Reducing all number of moves");
         for (int i = 0; i < numberOfMoves.Count; i++)

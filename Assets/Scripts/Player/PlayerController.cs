@@ -17,6 +17,9 @@ public class PlayerController : Person, IDestroyable
     public delegate void PlayerMovedEventHandler();
     public static event PlayerMovedEventHandler PlayerFinishedMoving;
 
+    public event UnityAction OnSlimeStuck;
+
+
     //public delegate void OnPlayerDie();
     //public static event OnPlayerDie OnPlayerDieEvent;
 
@@ -376,7 +379,6 @@ public class PlayerController : Person, IDestroyable
         if(boxCollider.activeSelf) boxCollider.SetActive(false);
         currentState = PersonState.MOVING;
         IsFreeFall = true;
-        Debug.Log("FreeFall 2!");
         Invoke("EnableCollider" , .4f);
     }
 
@@ -423,16 +425,15 @@ public class PlayerController : Person, IDestroyable
             Invoke("CheckPlatform", 0.1f);
         }
         currentState = PersonState.IDLE;
-
     }
-    
+
     private void CheckPlatform()
     {
         if (!CheckPlatformUnderneath()) IsFreeFall = true;
+        else currentState = PersonState.IDLE; // OVO
     }
     private void HandleTweenBossMovementFinished()
     {
-
         isAtEdge = false;
     }
 
@@ -520,6 +521,12 @@ public class PlayerController : Person, IDestroyable
     {
         StartCoroutine("_MoveBossPlayerCoroutine");
     }
+    
+    public void SlimeStuck()
+    {
+        OnSlimeStuck?.Invoke();
+    }
+    
     #endregion
 
     #region INTERFACE IMPLEMENTATION
@@ -553,8 +560,6 @@ public class PlayerController : Person, IDestroyable
             LevelManager.Instance.ShowDefeatPanel(txt);
 
             base.Death(txt);
-
-            //OnPlayerDieEvent?.Invoke();
 
             if (!IsExtraLifeActive)
             {
