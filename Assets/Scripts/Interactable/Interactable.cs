@@ -5,6 +5,7 @@ using UnityEngine;
 public class Interactable : MonoBehaviour
 {
     public PickableType type;
+    [SerializeField] protected GameObject _particleEffect;
 
     public virtual void Interact()
     {

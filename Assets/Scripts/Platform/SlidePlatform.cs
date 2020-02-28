@@ -32,14 +32,42 @@ public class SlidePlatform : BasePlatform
             //OnSlidePlatformInteractEvent?.Invoke("LEFT");
         }
         controller.IsFreeFall = false;
-        controller.currentState = PersonState.IDLE;
+        //controller.currentState = PersonState.IDLE;
 
         
+    }
+
+    public override void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (isPositioned) return;
+        if (collision.collider.CompareTag("Player") || collision.collider.CompareTag("AI"))
+        {
+
+            _controller = collision.collider.transform.parent.GetComponent<Person>();
+            StartCoroutine(_WaitForIdleCoroutine());
+        }
+    }
+
+    public override void OnCollisionExit2D(Collision2D collision)
+    {
+        if (!isPositioned) return;
+        if (collision.collider.CompareTag("Player") || collision.collider.CompareTag("AI"))
+        {
+
+            UnParentPlayer(_controller);
+            _controller = null;
+        }
     }
 
     public void SetUpSlide(bool value)
     {
         slideRight = value;
+    }
+
+    private IEnumerator _WaitForIdleCoroutine()
+    {
+        yield return new WaitUntil(()=>_controller.currentState == PersonState.IDLE);
+        Interact(_controller);
     }
  
 }

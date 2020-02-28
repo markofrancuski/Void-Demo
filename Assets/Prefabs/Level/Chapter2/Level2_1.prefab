@@ -432,6 +432,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 3
+  _particleEffect: {fileID: 9186394699393598030, guid: 435520a2bbf8c2e47925ca2cc112b84d,
+    type: 3}
 --- !u!1 &1924349658274168504
 GameObject:
   m_ObjectHideFlags: 0
@@ -1370,6 +1372,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 3
+  _particleEffect: {fileID: 9186394699393598030, guid: 435520a2bbf8c2e47925ca2cc112b84d,
+    type: 3}
 --- !u!1 &3108548103179041073
 GameObject:
   m_ObjectHideFlags: 0
@@ -1778,6 +1782,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 3
+  _particleEffect: {fileID: 9186394699393598030, guid: 435520a2bbf8c2e47925ca2cc112b84d,
+    type: 3}
 --- !u!1 &4658093909638770972
 GameObject:
   m_ObjectHideFlags: 0

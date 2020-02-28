@@ -12,12 +12,16 @@ public class PlayerAnimator : MonoBehaviour
     {
         GetComponent<PlayerController>().OnSlimeStuck += PlayStuck;
         GetComponent<Person>().OnPlayerDeath += PlayDeath;
-        
+        GetComponent<PlayerController>().PlayMoveAnimation += PlayJump;
+
+
     }
     private void OnDisable()
     {
         GetComponent<PlayerController>().OnSlimeStuck -= PlayStuck;
         GetComponent<Person>().OnPlayerDeath -= PlayDeath;
+        GetComponent<PlayerController>().PlayMoveAnimation -= PlayJump;
+
     }
 
     private void PlayStuck()
@@ -28,5 +32,11 @@ public class PlayerAnimator : MonoBehaviour
     private void PlayDeath()
     {
         _animator.SetTrigger("Death");
+    }
+
+    private void PlayJump(string which)
+    {
+        string triggerName = "Jump" + which;
+        _animator.SetTrigger(triggerName);
     }
 }

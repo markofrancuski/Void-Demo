@@ -77,7 +77,7 @@ public class BasePlatform : MonoBehaviour, IDestroyable, IParentPlayer, IUnParen
         if (transform.parent.childCount > 2) _playerPosition = transform.parent.GetChild(2);
     }
 
-    public void OnCollisionEnter2D(Collision2D collision)
+    public virtual void OnCollisionEnter2D(Collision2D collision)
     {
         if (isPositioned) return;
         if (collision.collider.CompareTag("Player")  || collision.collider.CompareTag("AI"))
@@ -89,7 +89,7 @@ public class BasePlatform : MonoBehaviour, IDestroyable, IParentPlayer, IUnParen
         }
     }
 
-    public void OnCollisionExit2D(Collision2D collision)
+    public virtual void OnCollisionExit2D(Collision2D collision)
     {
         if (!isPositioned) return;
         if (collision.collider.CompareTag("Player") || collision.collider.CompareTag("AI"))

@@ -12,7 +12,10 @@ public class Moves : Interactable
 
     public override void Interact()
     {
-        Debug.Log("Moves power up is interacting!");
+        if (_particleEffect != null)
+        {
+            GameObject go = Instantiate(_particleEffect, transform.position, Quaternion.identity);
+        }
         LevelManager.Instance.AddMoves(movesToAdd);
         base.Interact();
     }

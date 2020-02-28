@@ -18,6 +18,8 @@ public class PlayerController : Person, IDestroyable
     public static event PlayerMovedEventHandler PlayerFinishedMoving;
 
     public event UnityAction OnSlimeStuck;
+    public event UnityAction<string> PlayMoveAnimation;
+    public event UnityAction<string> RotateParticle;
 
 
     //public delegate void OnPlayerDie();
@@ -118,8 +120,10 @@ public class PlayerController : Person, IDestroyable
 
     private void OnBecameInvisible()
     {
+        Debug.Log("ASD!");
         if (PlayerWon) return;
-        if (Globals.Instance.isSceneReady && !isReadyToDestroy) Death("Invisible");
+        //if (Globals.Instance.isSceneReady && !isReadyToDestroy) Death("Invisible");
+        Death("Invisible");
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -350,6 +354,9 @@ public class PlayerController : Person, IDestroyable
     void MovePlayer()
     {
         currentState = PersonState.MOVING;
+        Debug.Log($"RotateParticle: {movementList[0]}");
+        RotateParticle?.Invoke(movementList[0]);
+
         switch (movementList[0])
         {
             case "UP": _moveBossTween = Tween.Position(gameObject.transform, nextPosition, Globals.Instance.tweenDuration, 0, Tween.EaseInOutStrong, Tween.LoopType.None, HandleTweenStarted, HandleTweenFinished); break;
@@ -366,20 +373,18 @@ public class PlayerController : Person, IDestroyable
                     _moveBossTween = Tween.Position(gameObject.transform, nextPosition, Globals.Instance.tweenDuration, 0, Tween.EaseOut, Tween.LoopType.None, HandleTweenStarted, HandleTweenFinished); break;
                 }
                 break;
-            case "RIGHT": _moveBossTween = Tween.Position(gameObject.transform, nextPosition, Globals.Instance.tweenDuration, 0, Tween.EaseOut, Tween.LoopType.None, HandleTweenStarted, HandleTweenFinished); break;
-            case "LEFT": _moveBossTween = Tween.Position(gameObject.transform, nextPosition, Globals.Instance.tweenDuration, 0, Tween.EaseOut, Tween.LoopType.None, HandleTweenStarted, HandleTweenFinished); break;
+            case "RIGHT":
+                _moveBossTween = Tween.Position(gameObject.transform, nextPosition, Globals.Instance.tweenDuration, 0, Tween.EaseOut, Tween.LoopType.None, HandleTweenStarted, HandleTweenFinished);
+                PlayMoveAnimation?.Invoke("RIGHT");
+                break;
 
+            case "LEFT":
+                _moveBossTween = Tween.Position(gameObject.transform, nextPosition, Globals.Instance.tweenDuration, 0, Tween.EaseOut, Tween.LoopType.None, HandleTweenStarted, HandleTweenFinished);
+                PlayMoveAnimation?.Invoke("LEFT");
+                break;
             default:
                 break;
         }
-    }
-
-    protected override void HandleTweenMovingDownStarted()
-    {
-        if(boxCollider.activeSelf) boxCollider.SetActive(false);
-        currentState = PersonState.MOVING;
-        IsFreeFall = true;
-        Invoke("EnableCollider" , .4f);
     }
 
     private void EnableCollider()
@@ -390,6 +395,14 @@ public class PlayerController : Person, IDestroyable
         //}
         Debug.Log("Turned Colldier On!");
     }
+    protected override void HandleTweenMovingDownStarted()
+    {
+        if(boxCollider.activeSelf) boxCollider.SetActive(false);
+        currentState = PersonState.MOVING;
+        IsFreeFall = true;
+        Invoke("EnableCollider" , .4f);
+    }
+ 
     protected override void HandleTweenMovingDownFinished()
     {
         if (movementList.Count > 0) movementList.Remove(movementList[0]);
@@ -439,6 +452,8 @@ public class PlayerController : Person, IDestroyable
 
     private void HandleTweenSlideMoveFinished()
     {
+        Debug.Log("HandleTweenSlideMoveFinished");
+        if (movementList.Count > 0) movementList.Remove(movementList[0]);
         if (!CheckPlatformUnderneath())  IsFreeFall = true; 
         hasInteracatedWithSlide = false;
         currentState = PersonState.IDLE;
@@ -554,7 +569,8 @@ public class PlayerController : Person, IDestroyable
     
     public override void Death(string txt)
     {
-        if(InputManager.Instance.isControllable)
+        Debug.Log("Death ! ");
+        /*if(InputManager.Instance.isControllable)
         {
             InputManager.Instance.UnControlPlayer();
             LevelManager.Instance.ShowDefeatPanel(txt);
@@ -567,6 +583,17 @@ public class PlayerController : Person, IDestroyable
 
                 print("You have died");
             }
+        }*/
+        InputManager.Instance.UnControlPlayer();
+        LevelManager.Instance.ShowDefeatPanel(txt);
+
+        base.Death(txt);
+
+        if (!IsExtraLifeActive)
+        {
+            StopAllCoroutines();
+
+            print("You have died");
         }
     }
 
@@ -575,11 +602,13 @@ public class PlayerController : Person, IDestroyable
         if (move == "RIGHT")
         {
             nextPosition = GetMovement("RIGHT");
+            PlayMoveAnimation?.Invoke("RIGHT");
             Tween.Position(gameObject.transform, nextPosition, Globals.Instance.tweenDuration, 0, Tween.EaseOut, Tween.LoopType.None, HandleTweenStarted, HandleTweenSlideMoveFinished); 
         }
         else
         {
             nextPosition = GetMovement("LEFT");
+            PlayMoveAnimation?.Invoke("LEFT");
             Tween.Position(gameObject.transform, nextPosition, Globals.Instance.tweenDuration, 0, Tween.EaseOut, Tween.LoopType.None, HandleTweenStarted, HandleTweenSlideMoveFinished);
         }
     }
