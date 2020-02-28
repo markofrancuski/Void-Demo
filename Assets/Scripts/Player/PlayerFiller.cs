@@ -18,7 +18,6 @@ public class PlayerFiller : MonoBehaviour
 
     void FillSprite(float fillAmount, float movePosX)
     {
-        Debug.Log($"fillAmount:{fillAmount}, movePosX{movePosX}");
         Vector3 newScale = transform.localScale;
         newScale.y += fillAmount;
 

@@ -150,6 +150,8 @@ public class Person : MonoBehaviour
     {
         Debug.Log("Death from: " + txt);
         currentState = PersonState.DEAD;
+        //Vibrate phone
+        Handheld.Vibrate();
     }
 
     protected virtual void HandleTweenStarted()

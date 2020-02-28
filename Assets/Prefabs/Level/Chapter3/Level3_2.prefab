@@ -588,6 +588,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 3
+  _particleEffect: {fileID: 9186394699393598030, guid: 435520a2bbf8c2e47925ca2cc112b84d,
+    type: 3}
 --- !u!1 &974929812010909241
 GameObject:
   m_ObjectHideFlags: 0
@@ -1304,7 +1306,7 @@ MonoBehaviour:
   _gridSize: 3
   timObject: {fileID: 2483795446570506148, guid: ca5ebad7b4ae5f64e9db7995575de6f3,
     type: 3}
-  annieObject: {fileID: 7205325629205194609, guid: c53f68f0bc6d7404a84f15d2357e10ab,
+  annieObject: {fileID: 8457872135094274366, guid: c53f68f0bc6d7404a84f15d2357e10ab,
     type: 3}
   timSP: {x: 0, y: 1}
   annieSP: {x: 0, y: 2}
@@ -2466,6 +2468,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 3
+  _particleEffect: {fileID: 9186394699393598030, guid: 435520a2bbf8c2e47925ca2cc112b84d,
+    type: 3}
 --- !u!1 &8089025591170094764
 GameObject:
   m_ObjectHideFlags: 0
@@ -2603,6 +2607,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 3
+  _particleEffect: {fileID: 9186394699393598030, guid: 435520a2bbf8c2e47925ca2cc112b84d,
+    type: 3}
 --- !u!1 &8093672918462577798
 GameObject:
   m_ObjectHideFlags: 0
@@ -2871,6 +2877,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 3
+  _particleEffect: {fileID: 9186394699393598030, guid: 435520a2bbf8c2e47925ca2cc112b84d,
+    type: 3}
 --- !u!1 &8554689799867811817
 GameObject:
   m_ObjectHideFlags: 0

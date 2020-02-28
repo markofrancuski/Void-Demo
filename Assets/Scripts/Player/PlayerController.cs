@@ -21,7 +21,6 @@ public class PlayerController : Person, IDestroyable
     public event UnityAction<string> PlayMoveAnimation;
     public event UnityAction<string> RotateParticle;
 
-
     //public delegate void OnPlayerDie();
     //public static event OnPlayerDie OnPlayerDieEvent;
 
@@ -87,6 +86,7 @@ public class PlayerController : Person, IDestroyable
         GameManager.ReviveButtonClickedEvent += ChangePlayerExtraLife;
         GameManager.ReviveButtonClickedEvent += OnReviveClick;
 
+        GetComponent<PlayerBoundChecker>().OutOfBounds += PlayerInvisible;
         //Test
         GameManager.ResetSceneEvent += () => { IsExtraLifeActive.currentValue = true; };
         //OnPlayerDieEvent += LevelManager.Instance.ShowDeathPanel;
@@ -113,16 +113,16 @@ public class PlayerController : Person, IDestroyable
         GameManager.CheckPlayerLifeSaverEvent -= GetLifeSaver;
         GameManager.ReviveButtonClickedEvent -= ChangePlayerExtraLife;
         GameManager.ReviveButtonClickedEvent -= OnReviveClick;
+
+        GetComponent<PlayerBoundChecker>().OutOfBounds -= PlayerInvisible;
         //Test
         GameManager.ResetSceneEvent -= () => { IsExtraLifeActive.currentValue = true; };
         //OnPlayerDieEvent -= LevelManager.Instance.ShowDeathPanel;
     }
 
-    private void OnBecameInvisible()
+    private void PlayerInvisible()
     {
-        Debug.Log("ASD!");
         if (PlayerWon) return;
-        //if (Globals.Instance.isSceneReady && !isReadyToDestroy) Death("Invisible");
         Death("Invisible");
     }
 
@@ -354,7 +354,6 @@ public class PlayerController : Person, IDestroyable
     void MovePlayer()
     {
         currentState = PersonState.MOVING;
-        Debug.Log($"RotateParticle: {movementList[0]}");
         RotateParticle?.Invoke(movementList[0]);
 
         switch (movementList[0])
@@ -569,7 +568,6 @@ public class PlayerController : Person, IDestroyable
     
     public override void Death(string txt)
     {
-        Debug.Log("Death ! ");
         /*if(InputManager.Instance.isControllable)
         {
             InputManager.Instance.UnControlPlayer();
@@ -589,12 +587,6 @@ public class PlayerController : Person, IDestroyable
 
         base.Death(txt);
 
-        if (!IsExtraLifeActive)
-        {
-            StopAllCoroutines();
-
-            print("You have died");
-        }
     }
 
     public override void SlideMove(string move)

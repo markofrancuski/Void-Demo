@@ -18,7 +18,6 @@ public class PlayerParticleController : MonoBehaviour
 
     private void RotateParticleObject(string where)
     {
-        Debug.Log($"_particleTransform.rotation before: {_particleTransform.rotation}");
         switch (where)
         {
             case "RIGHT":
@@ -36,6 +35,5 @@ public class PlayerParticleController : MonoBehaviour
             default:
                 break;
         }
-        Debug.Log($"_particleTransform.rotation after: {_particleTransform.rotation}");
     }
 }

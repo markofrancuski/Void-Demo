@@ -82,7 +82,6 @@ public class BasePlatform : MonoBehaviour, IDestroyable, IParentPlayer, IUnParen
         if (isPositioned) return;
         if (collision.collider.CompareTag("Player")  || collision.collider.CompareTag("AI"))
         {
-            //Debug.Log($"Player entered the platform: { gameObject.name } with position:{gameObject.transform.position}" );
             _controller = collision.collider.transform.parent.GetComponent<Person>();
             //ParentPlayer(_controller);
             StartCoroutine(_WaitForIdle(_controller));
@@ -94,7 +93,6 @@ public class BasePlatform : MonoBehaviour, IDestroyable, IParentPlayer, IUnParen
         if (!isPositioned) return;
         if (collision.collider.CompareTag("Player") || collision.collider.CompareTag("AI"))
         {
-            //Debug.Log($"Player left the platform: { gameObject.name }");
             if(OnFreeFallPlayerHandler != null) OnFreeFallPlayerHandler -= _controller.EnterInFreeFall;
             UnParentPlayer(_controller);
             _controller = null;
