@@ -75,23 +75,6 @@ public class MovmentSetUp : MonoBehaviour
         levelSelection.SetActive(false);
     }
 
-    private IEnumerator<float> _LoadLevel()
-    {
-        Debug.Log("Loading Level");
-        canvasAnimatior.SetBool("Load", true);
-        AsyncOperation operation = SceneManager.LoadSceneAsync("Level_"+ Globals.Instance.currentChapter + "_" + Globals.Instance.currentLevel);
-        operation.allowSceneActivation = false;
-
-        while(!operation.isDone)
-        {
-            if (operation.progress >= .9f) break;
-            yield return Timing.WaitForOneFrame;
-        }
-
-        yield return Timing.WaitForSeconds(2.3f);
-        operation.allowSceneActivation = true;                 
-    }
-
     [SerializeField] private GameObject[] chapterButtons;
     [SerializeField] private GameObject[] levelButtons;
     [SerializeField] private GameObject levelSelection;

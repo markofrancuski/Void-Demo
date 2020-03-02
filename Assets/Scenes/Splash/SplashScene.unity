@@ -1092,6 +1092,8 @@ MonoBehaviour:
   extraLifeImage: {fileID: 0}
   coinValue: {fileID: 0}
   coinValueText: {fileID: 0}
+  _deathParticles: {fileID: 5878900217142548216, guid: f05de3c3b91c55040b757150f0758cee,
+    type: 3}
 --- !u!4 &53188849832542794
 Transform:
   m_ObjectHideFlags: 0
@@ -1233,7 +1235,7 @@ MonoBehaviour:
   - levels:
     - {fileID: 0}
   - levels:
-    - {fileID: 493982484513404427, guid: fa034f6370f3d6a46ad0222080a5227c, type: 3}
+    - {fileID: 430572923095012852, guid: d34eb04cfd412274c943562c47d5858a, type: 3}
 --- !u!1 &53188850198600007
 GameObject:
   m_ObjectHideFlags: 0

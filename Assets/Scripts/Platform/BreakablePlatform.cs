@@ -50,9 +50,9 @@ public class BreakablePlatform : BasePlatform
     protected override void Start()
     {
         base.Start();
-        Vector2 parentSize = gameObject.transform.parent.transform.localScale;
+        /*Vector2 parentSize = gameObject.transform.parent.transform.localScale;
         triggerCollider.size = new Vector2(parentSize.x * 0.8f, 0.8f);
-        triggerCollider.offset += new Vector2(0, 0.2f);
+        triggerCollider.offset += new Vector2(0, 0.2f);*/
        
     }
 

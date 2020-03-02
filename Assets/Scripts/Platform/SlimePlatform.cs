@@ -56,7 +56,7 @@ public class SlimePlatform : BasePlatform
         int indexList = numberOfMoves.Count - 1;
         PlayerController pc = (PlayerController) controller;
 
-        del = pc.SlimeStuck;
+        del += pc.SlimeStuck;
         Timing.RunCoroutine(_WaitForSwipes(indexList, controller).
             CancelWith(gameObject), $"Freeze{controller.personIndex}");
     }
@@ -70,7 +70,10 @@ public class SlimePlatform : BasePlatform
         controller.UnFreezePlayer();
         Timing.KillCoroutines($"Freeze{controller.personIndex}");
         InputManager.OnSwipedEvent -= OnSwiped;
-        del = null;
+
+        PlayerController pc = (PlayerController)controller;
+        del -= pc.SlimeStuck;
+
         if (IsListEmpty()) numberOfMoves.Clear();
 
     }

@@ -3638,7 +3638,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 3
   _controller: {fileID: 0}
-  triggerCollider: {fileID: 5333367709059342106}
+  triggerCollider: {fileID: 7889679128772742222}
   _playerPosition: {fileID: 0}
   IsMovingLevel: 0
   platformLocation: 0
@@ -4238,6 +4238,8 @@ MonoBehaviour:
   distanceFromUpperPlatform: 0
   distanceFromUnderneathPlatfrom: 0
   isPositioned: 0
+  _hayParticles: {fileID: 7827803694501547790, guid: d785d906eebb58c4bb7c3dd3aae38eb3,
+    type: 3}
 --- !u!1 &4504537833036052241
 GameObject:
   m_ObjectHideFlags: 0
@@ -4494,7 +4496,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 3
   _controller: {fileID: 0}
-  triggerCollider: {fileID: 827116300293080169}
+  triggerCollider: {fileID: 3370144150245634778}
   _playerPosition: {fileID: 0}
   IsMovingLevel: 0
   platformLocation: 0
@@ -4652,7 +4654,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 3
   _controller: {fileID: 0}
-  triggerCollider: {fileID: 3582047487467447163}
+  triggerCollider: {fileID: 4009697436005278647}
   _playerPosition: {fileID: 0}
   IsMovingLevel: 0
   platformLocation: 0

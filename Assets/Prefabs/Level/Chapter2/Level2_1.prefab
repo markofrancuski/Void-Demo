@@ -993,7 +993,8 @@ MonoBehaviour:
     type: 3}
   movingPrefab: {fileID: 5093679420046920931, guid: 679456bd53f1dd44383513cc3d1cbbc8,
     type: 3}
-  explosiveEnemyPosition: []
+  explosiveEnemyPosition:
+  - {x: 2, y: 2}
   movingEnemyPosition: []
   shooterInfo: []
 --- !u!1 &2957633520788830501

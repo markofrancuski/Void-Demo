@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerBoundChecker : MonoBehaviour
+public class PlayerBoundaryChecker : MonoBehaviour
 {
     public UnityAction OutOfBounds;
 
@@ -25,7 +25,7 @@ public class PlayerBoundChecker : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!_isInvoked && transform.position.y <= _yPosCheck ) OutOfBounds?.Invoke();
+        if (!_isInvoked && (transform.position.y <= _yPosCheck || transform.position.x >= 3.2 || transform.position.x <= -3.2)) OutOfBounds?.Invoke();
     }
 
 }

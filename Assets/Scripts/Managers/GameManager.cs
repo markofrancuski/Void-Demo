@@ -85,5 +85,12 @@ public class GameManager : Singleton<GameManager>
         if(coinValueText != null) coinValueText.SetText(coinValue.currentValue.ToString());
     }
 
+    [SerializeField] private GameObject _deathParticles;
+
+    public void SpawnParticles(Transform pos)
+    {
+        GameObject go = Instantiate(_deathParticles);
+        go.transform.position = pos.position;
+    }
 
 }

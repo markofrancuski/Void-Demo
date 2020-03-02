@@ -2344,6 +2344,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa8be070f35875f4f84202bb1fe36f3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  IsBossLevel: 0
+  bossLevelIndex: 0
+  bossPrefab: {fileID: 0}
+  timPrefab: {fileID: 0}
+  bossScript: {fileID: 0}
+  _bossHealthImage: {fileID: 0}
   canvasAnimator: {fileID: 95850913}
   currentChapter: 0
   maxMoves: 50
@@ -2356,8 +2362,9 @@ MonoBehaviour:
   currentLevelText: {fileID: 1453718504}
   defeatText: {fileID: 815321598}
   nextLevelButton: {fileID: 1649982698}
-  levelGO: {fileID: 0}
   Players: 0
+  _fillIncrement: 0
+  _fillIncrementMovePos: 0
   players:
   - {fileID: 0}
   - {fileID: 0}

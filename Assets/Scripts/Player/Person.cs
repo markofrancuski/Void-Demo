@@ -132,8 +132,13 @@ public class Person : MonoBehaviour
     {
         if (InputManager.Instance.isControllable)
         {
-            if (other.CompareTag("Projectile")) { Death("Projectile"); return; };
-            if (other.CompareTag("AI")) { Death("Moving Enemy"); return; };
+            if (other.CompareTag("Projectile"))
+            {
+                GameManager.Instance.SpawnParticles(gameObject.transform);
+                Death("Projectile");
+                Destroy(other.gameObject);
+                return;
+            };
             //int team = other.GetComponent<Projectile>().Team;
             //if (team != Team)
             //{
@@ -189,7 +194,8 @@ public class Person : MonoBehaviour
     {
         /*if (!isMovementReversed) movementList.AddLast(movement);
         else movementList.AddLast(GetReversedMovement(movement) );*/
-        if(!isFrozen) movementList.Add(movement);//!isFreeFall && 
+        if (!isMovementReversed) movementList.Add(movement);//!isFreeFall && 
+        else movementList.Add(GetReversedMovement(movement));
     }
     protected void ClearList() => movementList.Clear();
     public void ParentPerson(Transform parent)
@@ -213,7 +219,6 @@ public class Person : MonoBehaviour
 
     #region HELPER FUNCTIONS
 
-    /// NE RADI REVERSE JER NIJE POZVAN NIGDE
     private string GetReversedMovement(string movement)
     {
         switch (movement)

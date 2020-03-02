@@ -1929,12 +1929,25 @@ MonoBehaviour:
   isTestLevel: 0
   SpawnPlayers: 1
   isDoubleLevel: 0
-  explosivePrefab: {fileID: 0}
-  shootingPrefab: {fileID: 0}
-  movingPrefab: {fileID: 0}
+  explosivePrefab: {fileID: 7824222695187186586, guid: 0f3298b7adf468642b4e934fad0ce593,
+    type: 3}
+  shootingPrefab: {fileID: 947939115650917611, guid: ae186253f1b179c48b98e5034a6e7368,
+    type: 3}
+  movingPrefab: {fileID: 5093679420046920931, guid: 679456bd53f1dd44383513cc3d1cbbc8,
+    type: 3}
   explosiveEnemyPosition: []
   movingEnemyPosition: []
-  shooterInfo: []
+  shooterInfo:
+  - level: {fileID: 0}
+    shootDirection: 1
+    fireRate: 2
+    spawnPos: 1
+    projectileSpeed: 100
+  - level: {fileID: 0}
+    shootDirection: 2
+    fireRate: 2
+    spawnPos: 1
+    projectileSpeed: 100
 --- !u!1 &2231528109621932807
 GameObject:
   m_ObjectHideFlags: 0

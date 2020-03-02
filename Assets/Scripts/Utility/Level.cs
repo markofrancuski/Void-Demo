@@ -590,7 +590,6 @@ public class Level : MonoBehaviour
                 tempX += newScale.x;
             }
         }
-
         //Set up enemies
 
     }
@@ -601,6 +600,7 @@ public class Level : MonoBehaviour
         for (int i = 0; i < shooterInfo.Length; i++)
         {
             GameObject go = Instantiate(shootingPrefab);
+            shooterInfo[i].level = this;
             go.GetComponent<ShooterEnemy>().SetUpShooter(shooterInfo[i]);
         }
     }
@@ -656,7 +656,7 @@ public class Level : MonoBehaviour
 [Serializable]
 public class ShooterInfo
 {
-    [SerializeField] private Level level;
+    public Level level;
     public ShootDirection shootDirection;
     public float fireRate;
     [SerializeField] private int spawnPos;

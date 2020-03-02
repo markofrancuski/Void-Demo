@@ -27,11 +27,6 @@ public class GoToSceneEditor : EditorWindow
             EditorSceneManager.OpenScene("Assets/Scenes/Main/MainMenu.unity");
         }
 
-        if (GUILayout.Button("Chapter 6 Test Scene"))
-        {
-            //Load Main Menu
-            EditorSceneManager.OpenScene("Assets/Scenes/Chapter_6/Level_6_1.unity");
-        }
         if (GUILayout.Button("Double Prefab"))
         {
             //Load Main Menu

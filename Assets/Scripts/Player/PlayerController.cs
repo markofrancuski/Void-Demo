@@ -86,7 +86,7 @@ public class PlayerController : Person, IDestroyable
         GameManager.ReviveButtonClickedEvent += ChangePlayerExtraLife;
         GameManager.ReviveButtonClickedEvent += OnReviveClick;
 
-        GetComponent<PlayerBoundChecker>().OutOfBounds += PlayerInvisible;
+        GetComponent<PlayerBoundaryChecker>().OutOfBounds += PlayerInvisible;
         //Test
         GameManager.ResetSceneEvent += () => { IsExtraLifeActive.currentValue = true; };
         //OnPlayerDieEvent += LevelManager.Instance.ShowDeathPanel;
@@ -114,7 +114,7 @@ public class PlayerController : Person, IDestroyable
         GameManager.ReviveButtonClickedEvent -= ChangePlayerExtraLife;
         GameManager.ReviveButtonClickedEvent -= OnReviveClick;
 
-        GetComponent<PlayerBoundChecker>().OutOfBounds -= PlayerInvisible;
+        GetComponent<PlayerBoundaryChecker>().OutOfBounds -= PlayerInvisible;
         //Test
         GameManager.ResetSceneEvent -= () => { IsExtraLifeActive.currentValue = true; };
         //OnPlayerDieEvent -= LevelManager.Instance.ShowDeathPanel;
@@ -199,7 +199,7 @@ public class PlayerController : Person, IDestroyable
         LevelManager.LevelFinishedBuilding -= SubscribeBossMovement;
         while (true)
         {
-            if(movementList.Count != 0 && currentState == PersonState.IDLE && !IsFreeFall && !hasInteracatedWithSlide && !isAtEdge && !isFrozen)
+            if(movementList.Count != 0 && currentState == PersonState.IDLE && !IsFreeFall && !hasInteracatedWithSlide && !isAtEdge)
             {
                 Vector3 _pos = GetMovement(movementList[0]);
 
@@ -434,7 +434,8 @@ public class PlayerController : Person, IDestroyable
         if (isAtEdge) Tween.Position(transform, lastPosition, Globals.Instance.tweenDuration, 0, Tween.EaseInOutStrong, Tween.LoopType.None, null, HandleTweenBossMovementFinished);
         else
         {
-            Invoke("CheckPlatform", 0.1f);
+            CheckPlatform();
+            //Invoke("CheckPlatform", 0.1f);
         }
         currentState = PersonState.IDLE;
     }
@@ -452,7 +453,6 @@ public class PlayerController : Person, IDestroyable
     private void HandleTweenSlideMoveFinished()
     {
         Debug.Log("HandleTweenSlideMoveFinished");
-        if (movementList.Count > 0) movementList.Remove(movementList[0]);
         if (!CheckPlatformUnderneath())  IsFreeFall = true; 
         hasInteracatedWithSlide = false;
         currentState = PersonState.IDLE;
@@ -591,6 +591,8 @@ public class PlayerController : Person, IDestroyable
 
     public override void SlideMove(string move)
     {
+        //if (movementList.Count > 0) movementList.Remove(movementList[0]);
+
         if (move == "RIGHT")
         {
             nextPosition = GetMovement("RIGHT");
@@ -604,26 +606,7 @@ public class PlayerController : Person, IDestroyable
             Tween.Position(gameObject.transform, nextPosition, Globals.Instance.tweenDuration, 0, Tween.EaseOut, Tween.LoopType.None, HandleTweenStarted, HandleTweenSlideMoveFinished);
         }
     }
-    /*public override void SlimeInteraction()
-    {
-        InputManager.OnSwipedEvent -= AddMove;
-        InputManager.OnSwipedEvent += ReduceTurn;
-    }
-
-    private void ReduceTurn(string str)
-    {
-        waitForTurns--;
-        if(waitForTurns <= 0)
-        {
-            waitForTurns = 3;
-            InputManager.OnSwipedEvent -= ReduceTurn;
-            InputManager.OnSwipedEvent += AddMove;
-        }
-    }
-    */
-
-
-
+   
     #endregion
 
 }
