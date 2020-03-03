@@ -17,7 +17,7 @@ public class MovingEnemy : MonoBehaviour
     [SerializeField] private float waitTimer;
 
     [Header("Move Path Settings")]
-    [SerializeField] private Vector2[] movePath;
+    [SerializeField] private Vector2[] _movePath;
     [SerializeField] private int moveIndex = 0;
 
     #region Unity Functions
@@ -27,7 +27,7 @@ public class MovingEnemy : MonoBehaviour
         //Position the Enemy on a platform.
         //gameObject.transform.position = new Vector3(spawnPosition.x * Globals.Instance.movePaceHorizontal, (spawnPosition.y * Globals.Instance.movePaceVertical) + 0.05f, 0);
         waitTimer = Random.Range(minTime, maxTime);
-        if(movePath.Length> 0) Timing.RunCoroutine(_MoveCoroutine().CancelWith(gameObject));
+        if(_movePath.Length> 0) Timing.RunCoroutine(_MoveCoroutine().CancelWith(gameObject));
 
     }
 
@@ -54,16 +54,21 @@ public class MovingEnemy : MonoBehaviour
     private Vector3 GetVectorMove()
     {
         Vector3 move = new Vector2();
-        move.x += movePath[moveIndex].x * Globals.Instance.movePaceHorizontal;
-        move.y += movePath[moveIndex].y * Globals.Instance.movePaceVertical;
+        move.x += _movePath[moveIndex].x * Globals.Instance.movePaceHorizontal;
+        move.y += _movePath[moveIndex].y * Globals.Instance.movePaceVertical;
 
         moveIndex++;
-        if (moveIndex >= movePath.Length) moveIndex = 0;
+        if (moveIndex >= _movePath.Length) moveIndex = 0;
 
         waitTimer = Random.Range(minTime, maxTime);
 
         return move;
 
+    }
+
+    public void SetUpEnemy(Vector2[] movePath)
+    {
+        _movePath = movePath;
     }
 
 }

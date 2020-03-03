@@ -5,6 +5,7 @@ using Pixelplacement;
 using System;
 using UnityEngine.Events;
 
+
 public class Level : MonoBehaviour
 {
     [SerializeField] private List<GameObject> objects;
@@ -52,10 +53,10 @@ public class Level : MonoBehaviour
     [SerializeField] private GameObject explosivePrefab;
     [SerializeField] private GameObject shootingPrefab;
     [SerializeField] private GameObject movingPrefab;
-    public Vector2[] explosiveEnemyPosition;
-    public Vector2[] movingEnemyPosition;
+    public List<Vector2> explosiveEnemyInfo = null;
+    public List<MovingEnemyInfo> movingEnemyInfo = null;
+    public List<ShooterInfo> shooterEnemyInfo = null;
 
-    [SerializeField] private ShooterInfo[] shooterInfo;
     #endregion
 
     #region Unity Functions
@@ -100,9 +101,9 @@ public class Level : MonoBehaviour
             }
         }
 
-        if (explosiveEnemyPosition.Length > 0) SpawnExplosive();
-        if (movingEnemyPosition.Length > 0) SpawnMoving();
-        if (shooterInfo.Length > 0) SpawnShooters();
+        if (explosiveEnemyInfo != null) SpawnExplosive();
+        if (movingEnemyInfo != null) SpawnMoving();
+        if (shooterEnemyInfo != null) SpawnShooters();
     }
 
     /*private void OnDisable() 
@@ -161,7 +162,7 @@ public class Level : MonoBehaviour
     /// <param name="newList"> List of grid spaces</param>
     /// <param name="hearts"> Number of Hearts to collect in this level </param>
     /// <param name="moves"> Number of Moves player can have </param>
-    public void SetUpLevel(List<GameObject> newList, int hearts, int moves, int gridSize, GameObject[] prefabs, Vector2[] playerSP)
+    public void SetUpLevel(List<GameObject> newList, int hearts, int moves, int gridSize, GameObject[] prefabs, Vector2[] playerSP, List<Vector2> explosiveEnemyPosition = null, List<ShooterInfo> shooterInfo = null, List<MovingEnemyInfo> movingInfo = null)
     {
         objects = newList;
         heartsToCollect = hearts;
@@ -180,6 +181,21 @@ public class Level : MonoBehaviour
         timSP = playerSP[0];
         annieSP = playerSP[1];
 
+        if (explosiveEnemyPosition != null) this.explosiveEnemyInfo = explosiveEnemyPosition;
+        if (shooterInfo != null) shooterEnemyInfo = shooterInfo;
+        if (movingInfo != null) movingEnemyInfo = movingInfo;
+
+    }
+
+    private T[] ConvertToArray<T>(List<T> list)
+    {
+        int lenght = list.Count;
+        T[] array = new T[lenght];
+        for (int i = 0; i < lenght; i++)
+        {
+            array[i] = list[i];
+        }
+        return array;
     }
 
     public void SetUpBossLevel(List<GameObject> objects, int gridSize, UnityAction callback)
@@ -596,33 +612,43 @@ public class Level : MonoBehaviour
 
     void SpawnShooters()
     {
-        print("Spawning shooters");
-        for (int i = 0; i < shooterInfo.Length; i++)
+        print("Spawning Shooters");
+        for (int i = 0; i < shooterEnemyInfo.Count; i++)
         {
             GameObject go = Instantiate(shootingPrefab);
-            shooterInfo[i].level = this;
-            go.GetComponent<ShooterEnemy>().SetUpShooter(shooterInfo[i]);
+            shooterEnemyInfo[i].level = this;
+            go.GetComponent<ShooterEnemy>().SetUpShooter(shooterEnemyInfo[i]);
         }
     }
-  
+ 
     void SpawnExplosive()
     {
-        for (int i = 0; i < explosiveEnemyPosition.Length; i++)
+        print("Spawning Exploading");
+        for (int i = 0; i < explosiveEnemyInfo.Count; i++)
         {
-            GameObject go = Instantiate(explosivePrefab, transform.GetChild(TransformPositionToIndex(explosiveEnemyPosition[i])).position, Quaternion.identity);
-
+            int index = TransformPositionToIndex(explosiveEnemyInfo[i]);
+            Debug.Log($"Index: {index}");
+            GameObject go = Instantiate(explosivePrefab, transform.GetChild(index).position, Quaternion.identity);
+            go.GetComponent<ExplosiveEnemy>().PlatformIndex = index;
         }
     }
 
     void SpawnMoving()
     {
-        for (int i = 0; i < movingEnemyPosition.Length; i++)
+        print("Spawning Moving");
+        for (int i = 0; i < movingEnemyInfo.Count; i++) 
         {
-            GameObject go = Instantiate(movingPrefab, transform.GetChild(TransformPositionToIndex(movingEnemyPosition[i])).position, Quaternion.identity);
+            int index = TransformPositionToIndex(movingEnemyInfo[i].SpawnPosition);
+            GameObject go = Instantiate(movingPrefab, transform.GetChild(index).position, Quaternion.identity);
+            go.GetComponent<MovingEnemy>().SetUpEnemy( ConvertToArray(movingEnemyInfo[i].MovingPaths) );
         }
     }
 
-    int TransformPositionToIndex(Vector2 position) { return (int) ((position.y* _gridSize) + position.x);}
+
+    public int TransformPositionToIndex(Vector2 position)
+    {
+        return (int) ((position.y* _gridSize) + position.x);
+    }
 
     Vector3 TransformIndexToPosition(ShootDirection dir, int spawnPos)
     {
@@ -661,6 +687,15 @@ public class ShooterInfo
     public float fireRate;
     [SerializeField] private int spawnPos;
     public float projectileSpeed = 150f;
+
+    public ShooterInfo(ShootDirection shootDirection, float fireRate, float projectileSpeed, int spawnPos)
+    {
+        this.shootDirection = shootDirection;
+        this.fireRate = fireRate;
+        this.projectileSpeed = projectileSpeed;
+        this.spawnPos = spawnPos;
+
+    }
 
     public Vector3 pos 
     {

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class EnemyBase : MonoBehaviour
 {
+
+    public int PlatformIndex;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -15,4 +18,6 @@ public class EnemyBase : MonoBehaviour
     {
         
     }
+
+
 }

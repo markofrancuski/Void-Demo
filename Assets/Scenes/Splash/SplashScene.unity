@@ -1217,7 +1217,7 @@ MonoBehaviour:
   isSceneReady: 0
   chapterInfo:
   - levels:
-    - {fileID: 0}
+    - {fileID: 5453713709712720155, guid: 9456c8047633ded41af1d45dab4a6da5, type: 3}
   - levels:
     - {fileID: 2691641086537639042, guid: 5c4eace5a82ffa324975de423489aca4, type: 3}
     - {fileID: 2206294762136142858, guid: f0dbfbf9c8a1625d9a50f987413e71a3, type: 3}

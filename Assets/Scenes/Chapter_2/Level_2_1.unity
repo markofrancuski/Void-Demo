@@ -1114,6 +1114,11 @@ PrefabInstance:
       propertyPath: ShapeModule.radiusThickness
       value: 1.0000
       objectReference: {fileID: 0}
+    - target: {fileID: 3604203950261307575, guid: 45ab5633f5c382e4398585421997e3e5,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 45ab5633f5c382e4398585421997e3e5, type: 3}
 --- !u!1 &507523090

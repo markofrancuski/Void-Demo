@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5093679420046920958}
   - component: {fileID: 1110614132460853660}
   - component: {fileID: 5093679420046920929}
+  - component: {fileID: 3788371864472310931}
   m_Layer: 0
   m_Name: Moving Enemy
   m_TagString: AI
@@ -151,7 +152,17 @@ MonoBehaviour:
   minTime: 0.5
   maxTime: 1.247
   waitTimer: 0
-  movePath:
-  - {x: 0, y: -1}
-  - {x: 0, y: 1}
+  _movePath: []
   moveIndex: 0
+--- !u!114 &3788371864472310931
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5093679420046920931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fcc5cca1aa733d541a59512bafdc6bab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

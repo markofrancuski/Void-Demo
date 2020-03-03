@@ -13,34 +13,59 @@ public class ExplosiveEnemy : MonoBehaviour
     private Vector3 scaleVector = new Vector3(0, 0.1f, 0);
     private Vector3 moveVector = new Vector3(0, 0.05f, 0);
 
-    [SerializeField] Transform platformPosition;
-    public int gridSize;
-    public int platformIndex;
+    [SerializeField] private List<BasePlatform> _surrondingPlatforms;
+    public int PlatformIndex;
 
     #region Unity Functions
 
     private void Start()
     {
-         /*platformPosition = LevelManager.Instance.levelGO.transform;
-         gridSize = (int) Mathf.Sqrt(platformPosition.childCount);
 
-        movePosition = new Vector3(platformPosition.GetChild(platformIndex).gameObject.transform.position.x, platformPosition.GetChild(platformIndex).gameObject.transform.position.y + 0.15f, 0);
-        Debug.Log(platformPosition.GetChild(platformIndex).gameObject.name);
-        Debug.Log(platformPosition.GetChild(platformIndex).gameObject.transform.position.x);
-        Debug.Log(platformPosition.GetChild(platformIndex).gameObject.transform.position.y);
-        //Position the Enemy on a platform.
-        gameObject.transform.position = movePosition;*/
+        //Get surronding platforms
+        Level lvl = Globals.Instance.levelGO.GetComponent<Level>();
+        
+        //Ray Up
+        int index = PlatformIndex - lvl.GridSize;
+        if (index >= 0)
+        {
+            if (lvl.transform.GetChild(index).GetChild(1).gameObject.activeInHierarchy)
+                _surrondingPlatforms.Add(lvl.transform.GetChild(index).GetChild(1).GetComponent<BasePlatform>());
+        }
+        
+        //Ray Down
+        index = PlatformIndex + lvl.GridSize;
+        if(index <= Mathf.Pow(lvl.GridSize,2))
+        {
+            if (lvl.transform.GetChild(index).GetChild(1).gameObject.activeInHierarchy)
+                _surrondingPlatforms.Add(lvl.transform.GetChild(index).GetChild(1).GetComponent<BasePlatform>());
+        }
+
+        //Ray Left
+        index = PlatformIndex - 1;
+        if (index % 5 != 0 && index >= 0)
+        {
+            if(lvl.transform.GetChild(index).GetChild(1).gameObject.activeInHierarchy)
+                _surrondingPlatforms.Add( lvl.transform.GetChild(index).GetChild(1).GetComponent<BasePlatform>() );
+        }
+        
+        //Ray Right
+        index = PlatformIndex + 1;
+        if (index % 4 != 0 && index < Mathf.Pow(lvl.GridSize, 2))
+        {
+            if (lvl.transform.GetChild(index).GetChild(1).gameObject.activeInHierarchy)
+                _surrondingPlatforms.Add(lvl.transform.GetChild(index).GetChild(1).GetComponent<BasePlatform>());
+        }
     }
 
     private void Update()
     {
 #if UNITY_EDITOR
-        Debug.DrawRay(transform.position, Vector2.up * Globals.Instance.movePaceVertical, Color.black);
+        Debug.DrawRay(transform.position, Vector2.up * Globals.Instance.movePaceVertical, Color.red);
 
-        Debug.DrawRay(transform.position, Vector2.down * -Globals.Instance.movePaceVertical, Color.black);
+        Debug.DrawRay(transform.position, Vector2.down * Globals.Instance.movePaceVertical, Color.red);
 
-        Debug.DrawRay(transform.position + new Vector3(0f, -0.55f, 0f), Vector2.right * Globals.Instance.movePaceHorizontal, Color.black);
-        Debug.DrawRay(transform.position + new Vector3(0f, -0.55f, 0f), Vector2.left * -Globals.Instance.movePaceHorizontal, Color.black);
+        Debug.DrawRay(transform.position + new Vector3(0f, -0.55f, 0f), Vector2.right * Globals.Instance.movePaceHorizontal, Color.red);
+        Debug.DrawRay(transform.position + new Vector3(0f, -0.55f, 0f), Vector2.left * Globals.Instance.movePaceHorizontal, Color.red);
 #endif
     }
 
@@ -93,40 +118,17 @@ public class ExplosiveEnemy : MonoBehaviour
         //Play Particle System
 
         Debug.Log($"Enemy {gameObject.name} Exploaded!");
-        //Shoot RayCasts in all 4 direction 
-        RaycastHit2D[] hits;
-
-        //Raycast Up
-        hits = Physics2D.RaycastAll(transform.position, Vector2.up, 2); // verticalSize
-        foreach (RaycastHit2D hit in hits)
+        foreach (var platform in _surrondingPlatforms)
         {
-            //|| hit.collider.CompareTag("Player")
-            if (hit.collider.CompareTag("Platform")) hit.collider.gameObject.GetComponent<IDestroyable>().DestroyObject();
-        }
-
-        hits = Physics2D.RaycastAll(transform.position, Vector2.down, 2.3f); // verticalSize + 0,3f
-        //Raycast Down
-        foreach (RaycastHit2D hit in hits)
-        {
-            if (hit.collider.CompareTag("Platform")) hit.collider.gameObject.GetComponent<IDestroyable>().DestroyObject();
-        }
-
-        hits = Physics2D.RaycastAll(transform.position + new Vector3(0f, -0.55f, 0f), Vector2.right, 1.125f); //horizontalSize
-        //Raycast Right
-        foreach (RaycastHit2D hit in hits)
-        {
-            if (hit.collider.CompareTag("Platform")) hit.collider.gameObject.GetComponent<IDestroyable>().DestroyObject();
-        }
-
-        hits = Physics2D.RaycastAll(transform.position + new Vector3(0f, -0.55f, 0f), Vector2.left, 1.125f); //horizontalSize
-        //Raycast Left
-        foreach (RaycastHit2D hit in hits)
-        {
-            if (hit.collider.CompareTag("Platform")) hit.collider.gameObject.GetComponent<IDestroyable>().DestroyObject();
+            platform.DestroyObject();
         }
 
         Destroy(gameObject);
     }
 
-    
+    public void SetupEnemy(Vector2 sp)
+    {
+        //spawnPosition = sp;
+        transform.position = sp;
+    }
 }

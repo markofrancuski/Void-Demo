@@ -344,6 +344,7 @@ MonoBehaviour:
   distanceFromUpperPlatform: 0
   distanceFromUnderneathPlatfrom: 0
   isPositioned: 0
+  _hayParticles: {fileID: 0}
 --- !u!1 &441084074760135414
 GameObject:
   m_ObjectHideFlags: 0
@@ -688,6 +689,7 @@ MonoBehaviour:
   distanceFromUpperPlatform: 0
   distanceFromUnderneathPlatfrom: 0
   isPositioned: 0
+  _hayParticles: {fileID: 0}
 --- !u!1 &1146679825745105580
 GameObject:
   m_ObjectHideFlags: 0
@@ -2624,6 +2626,7 @@ MonoBehaviour:
   distanceFromUpperPlatform: 0
   distanceFromUnderneathPlatfrom: 0
   isPositioned: 0
+  _hayParticles: {fileID: 0}
 --- !u!1 &4176543688389925535
 GameObject:
   m_ObjectHideFlags: 0
@@ -2755,6 +2758,7 @@ MonoBehaviour:
   distanceFromUpperPlatform: 0
   distanceFromUnderneathPlatfrom: 0
   isPositioned: 0
+  _hayParticles: {fileID: 0}
 --- !u!1 &4595701021016806395
 GameObject:
   m_ObjectHideFlags: 0
@@ -4229,7 +4233,12 @@ MonoBehaviour:
   movingPrefab: {fileID: 0}
   explosiveEnemyPosition: []
   movingEnemyPosition: []
-  shooterInfo: []
+  shooterInfo:
+  - level: {fileID: 0}
+    shootDirection: 0
+    fireRate: 0
+    spawnPos: 0
+    projectileSpeed: 0
 --- !u!1 &6742165714593735235
 GameObject:
   m_ObjectHideFlags: 0
@@ -5195,6 +5204,7 @@ MonoBehaviour:
   distanceFromUpperPlatform: 0
   distanceFromUnderneathPlatfrom: 0
   isPositioned: 0
+  _hayParticles: {fileID: 0}
 --- !u!1 &9191921100756632356
 GameObject:
   m_ObjectHideFlags: 0

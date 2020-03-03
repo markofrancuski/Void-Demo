@@ -5,12 +5,14 @@ using System.IO;
 
 public class LevelEditor : EditorWindow 
 {
+    #region Variables
     public int levelNumber; 
     private int gridSize;
     //private string saveLevelPath = "/Prefabs/Level/";
     private string saveLevelPath = "/";
     private string levelName = "Level";
     private bool isInEditMode;
+    private bool isHideGrid = false;
 
     private GameObject parentObject;
     private GameObject testObject;
@@ -26,6 +28,31 @@ public class LevelEditor : EditorWindow
     //Boss Level Stuff
     private bool isBossLevel;
     private ShootDirection platformLocation;
+
+    //Moving Enemy
+    private bool _spawnMoving;
+    //Values
+    [SerializeField] private Vector2 _movingEnemySP;
+    [SerializeField] private Vector2 _movingEnemyPath;
+    [SerializeField] private List<Vector2> _movingEnemyPaths= new List<Vector2>();
+    private List<MovingEnemyInfo> _movingEnemyInfo = new List<MovingEnemyInfo>();
+
+    //Shooter Enemy
+    private bool _spawnShooting;
+    //Values
+    private int _shooterPosition;
+    private ShootDirection _shooterDirection;
+    private float _shooterFireRate;
+    private float _shooterProjectileSpeed;
+
+    [SerializeField] private List<ShooterInfo> _shooterEnemyInfos = new List<ShooterInfo>();
+    
+    //Exploading Enemy
+    private bool _spawnExploding;
+    //Values
+    [SerializeField] private List<Vector2> _exploadingEnemyInfos = new List<Vector2>();
+    private Vector2Int _exploadingEnemyInfo = Vector2Int.zero;
+    #endregion
 
     #region Resources
     [Header("Sprites")]
@@ -68,9 +95,11 @@ public class LevelEditor : EditorWindow
 
     [SerializeField] private Texture defaultTexture;
 
+    //Prefabs
     [SerializeField] private GameObject timPrefab;
     [SerializeField] private GameObject anniePrefab;
 
+    //Enemy prefabs
     private GameObject movingEnemyPrefab;
     private GameObject explodingEnemyPrefab;
     private GameObject shootingEnemyPrefab;
@@ -168,7 +197,7 @@ public class LevelEditor : EditorWindow
         CheckHearts();
         GUILayout.Label($"Hearts To Collect: { numberOfHearts.ToString() }");
 
-        isBossLevel = EditorGUILayout.Toggle(new GUIContent("Boss Level", "Is Boss level or not, based on this toogle level will be setup with different settings."), isBossLevel);
+        isBossLevel = EditorGUILayout.Toggle(new GUIContent("Boss Level?", "Is Boss level or not, based on this toogle level will be setup with different settings."), isBossLevel);
         if (!isBossLevel)
         {
             EditorGUILayout.Space();
@@ -191,6 +220,8 @@ public class LevelEditor : EditorWindow
         #endregion
 
         #region Buttons
+        GUILayout.BeginHorizontal();
+
         GUI.color = Color.cyan;
         if(GUILayout.Button("Load Level to Edit")) TestLoadPrefab("Level 1");
 
@@ -198,31 +229,60 @@ public class LevelEditor : EditorWindow
         //Spawn Level Button
         if (GUILayout.Button("Spawn Level"))
         {
-            if (dictionary.Count <= 0) { Debug.LogError("LEVEL EDITOR- Cannot make empty level, place atleast one platform"); return; }
+            if(!isBossLevel && ( numberOfHearts <= 0 || numberOfMoves <= 0))
+            {
+                Debug.LogError("LEVEL EDITOR- Cannot make level without atleast 1 Heart/Move!");
+                return;
+            }
+            if (dictionary.Count <= 0)
+            {
+                Debug.LogError("LEVEL EDITOR- Cannot make empty level, place atleast one platform!");
+                return;
+            }
             saveLevelPath = EditorUtility.GetAssetPath(Selection.activeObject) + "/";
-            if (saveLevelPath == "/") { Debug.LogError("LEVEL EDITOR-You didn't select folder where you want to save prefab in project window!"); return; }
+            if (saveLevelPath == "/")
+            {
+                Debug.LogError("LEVEL EDITOR-You didn't select folder where you want to save prefab in project window!");
+                return;
+            }
             SpawnLevel();
         }
 
         GUI.color = Color.red;
         //Print the dictionary => What fields we filled up in a grid
-        if(GUILayout.Button("Debug Clicked Platforms"))
+        if(GUILayout.Button("Debug "))
         {
-            foreach (KeyValuePair<int, PlatformInfo> kvp in dictionary)
+            /*for (int i = 0; i < _exploadingEnemyInfos.Count; i++)
+            {
+                Debug.Log(_exploadingEnemyInfos[i]);
+            }*/
+
+            for (int i = 0; i < _movingEnemyInfo.Count; i++)
+            {
+                Debug.Log(_movingEnemyInfo[i]);
+            }
+            /*foreach (KeyValuePair<int, PlatformInfo> kvp in dictionary)
             {
                 Debug.Log(kvp.Value.ToString());
-            }
+            }*/
         }
-
+        
         GUI.color = Color.green;
         //Clears out the dictionary
         if(GUILayout.Button("Reset Grid")) dictionary.Clear();
         GUI.color = Color.white;
 
+        GUILayout.EndHorizontal();
         #endregion
 
         //Creates the grid
-        CreateGrid(gridSize, 25, 25, 50, 400, "Level Grid", 25);
+        isHideGrid = EditorGUILayout.Toggle(new GUIContent("Hide Grid", "Hide/Show the grid."), isHideGrid);
+        if(!isHideGrid) CreateGrid(gridSize, 25, 25, 50, 400, "Level Grid", 25);
+        else
+        {
+            //Display enemy info for editing 
+            DisplayEnemyInfo();
+        }
     }
 
     private void CreateGrid(int gridSize, float buttonSize, float spaceBetween, float posX, float posY, string boxName, float boxOffset)
@@ -279,7 +339,118 @@ public class LevelEditor : EditorWindow
             initialPosY += buttonSize + spaceBetween + boxSize2 / 2 ;
             initialPosX = posX;
         }
+
         GUI.color = Color.white;
+    }
+
+    private void DisplayEnemyInfo()
+    {
+        GUILayout.Box("Moving Enemy Panel");
+        _spawnMoving = EditorGUILayout.Toggle(new GUIContent("Spawn Moving?", "Enable/Disable spawning moving enemies"), _spawnMoving);
+        if(_spawnMoving)
+        {
+            _movingEnemySP = EditorGUILayout.Vector2Field("Spawn Position", _movingEnemySP);
+            _movingEnemyPath = EditorGUILayout.Vector2Field("Move Path", _movingEnemyPath);
+
+            EditorGUILayout.LabelField($"Moving Infos Amount:{_movingEnemyInfo.Count}");
+
+            foreach (var path in _movingEnemyPaths)
+            {
+                GUILayout.Label($"Path:{path}");
+            }
+
+            GUILayout.BeginHorizontal();
+            GUI.color = Color.cyan;
+            if (GUILayout.Button("Add path"))
+            {
+                _movingEnemyPaths.Add(_movingEnemyPath);
+                _movingEnemyPath = Vector2.zero;
+            }
+            GUI.color = Color.white;
+
+            GUI.color = Color.yellow;
+            if (GUILayout.Button("Add Enemy"))
+            {
+                _movingEnemyInfo.Add(new MovingEnemyInfo(_movingEnemySP, _movingEnemyPaths) );
+            }
+            GUI.color = Color.white;
+
+            GUI.color = Color.red;
+            if (GUILayout.Button("Remove Last Path"))
+            {
+                if(_movingEnemyPaths.Count > 0) _movingEnemyPaths.Remove(_movingEnemyPaths[_movingEnemyPaths.Count-1]);
+            }
+            GUI.color = Color.white;
+            GUILayout.EndHorizontal();
+        }
+
+        GUILayout.Box("Exploading Enemy Panel");
+        _spawnExploding = EditorGUILayout.Toggle(new GUIContent("Spawn Exploading?", "Enable/Disable spawning exploding enemies"), _spawnExploding);
+        if (_spawnExploding)
+        {
+            _exploadingEnemyInfo= EditorGUILayout.Vector2IntField("", _exploadingEnemyInfo);
+
+            EditorGUILayout.LabelField($"Exploading Infos Amount:{_exploadingEnemyInfos.Count}");
+
+            GUILayout.BeginHorizontal();
+
+            GUI.color = Color.yellow;
+            if (GUILayout.Button("Add Enemy"))
+            {
+                _exploadingEnemyInfos.Add(_exploadingEnemyInfo);
+            }
+            GUI.color = Color.white;
+
+            GUI.color = Color.red;
+            if (GUILayout.Button("Remove Last"))
+            {
+                _exploadingEnemyInfos.Remove(_exploadingEnemyInfos[_exploadingEnemyInfos.Count - 1]);
+            }
+            GUI.color = Color.white;
+
+            GUILayout.EndHorizontal();
+        }
+
+        GUILayout.Box("Shooting Enemy Panel");
+        _spawnShooting = EditorGUILayout.Toggle(new GUIContent("Spawn Shooting?", "Enable/Disable spawning shooting enemies"), _spawnShooting);
+        if (_spawnShooting)
+        {
+            _shooterDirection = (ShootDirection) EditorGUILayout.EnumPopup(new GUIContent("Projectile direction", "Towards which direction bullets will go(if its Left) that means enemy will be placed on right side of the screen"), _shooterDirection);
+            _shooterPosition = EditorGUILayout.IntField("Spawn position", _shooterPosition);
+            _shooterFireRate = EditorGUILayout.FloatField("Fire Rate", _shooterFireRate);
+            _shooterProjectileSpeed = EditorGUILayout.FloatField("Projectile Speed", _shooterProjectileSpeed);
+
+            EditorGUILayout.LabelField($"Shooter Infos Amount: {_shooterEnemyInfos.Count}");
+
+            GUI.color = Color.yellow;
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Add Enemy"))
+            {
+                ShooterInfo _shooterInfo = new ShooterInfo(_shooterDirection, _shooterFireRate, _shooterProjectileSpeed, _shooterPosition);
+
+                _shooterEnemyInfos.Add(_shooterInfo);
+            }
+            GUI.color = Color.white;
+
+            GUI.color = Color.red;
+            if (GUILayout.Button("Remove Last"))
+            {
+                if(_shooterEnemyInfos.Count > 0) _shooterEnemyInfos.Remove(_shooterEnemyInfos[_shooterEnemyInfos.Count - 1]);
+            }
+            GUI.color = Color.white;
+            GUILayout.EndHorizontal();
+        }
+    }
+
+    private void ResetVariables()
+    {
+        _movingEnemyInfo.Clear();
+        _movingEnemyPaths.Clear();
+        _exploadingEnemyInfos.Clear();
+        _shooterEnemyInfos.Clear();
+        _shooterFireRate = _shooterProjectileSpeed = _shooterPosition = 0;
+
+
     }
 
     private void SpawnLevel()
@@ -352,10 +523,11 @@ public class LevelEditor : EditorWindow
         }
         else
         {
-            parentObject.GetComponent<Level>().SetUpLevel(tempList, numberOfHearts, numberOfMoves, gridSize, prefabs, positions);
+            parentObject.GetComponent<Level>().SetUpLevel(tempList, numberOfHearts, numberOfMoves, gridSize, prefabs, positions, _exploadingEnemyInfos, _shooterEnemyInfos, _movingEnemyInfo);
             SaveAndDestroyPrefab();
         }
         parentObject = null;
+        ResetVariables();
     }
 
     #region Helper Functions

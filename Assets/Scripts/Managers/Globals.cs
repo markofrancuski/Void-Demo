@@ -134,7 +134,7 @@ public class Globals : Singleton<Globals>
     /// <summary>
     /// In case you need to reset current level.
     /// </summary>
-    /// <returns> Returns the name of the current level scene for reloading that scene.</returns>
+    /// <returns> Returns the name of the current level scene for reloading that scene.</returns> 
     public string GetCurrentLevelSceneName()
     {
         return  "Level_" + currentChapter + "_" + currentLevel;

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BreakablePlatform : BasePlatform
+public class BreakablePlatform : BasePlatform, IDestroyable
 {
     private void EnablePlatform() => gameObject.SetActive(true);
 
@@ -23,7 +23,6 @@ public class BreakablePlatform : BasePlatform
         }
         else
         {
-
             ParentPlayer(controller);
         }
 
@@ -44,7 +43,6 @@ public class BreakablePlatform : BasePlatform
         EnterFreeFall();
         gameObject.SetActive(false);
         Invoke("EnablePlatform", 2f);
-
     }
 
     protected override void Start()
