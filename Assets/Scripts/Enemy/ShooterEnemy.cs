@@ -9,47 +9,25 @@ public class ShooterEnemy : MonoBehaviour
 
     [Header("Shoot Settings")]
     public ShootDirection projectileDirection;
-    [SerializeField] private float projectileSpeed;
+    [SerializeField] private float _projectileSpeed;
     [Range(0.1f, 3f)]
     public float fireRate;
-    [SerializeField]private float tempFireRate;
-    
-    [SerializeField] private GameObject projectilePrefab;
-    [SerializeField] private Quaternion angle;
+    [SerializeField]private float _tempFireRate;
 
-    [SerializeField] private Vector2 pos = Vector2.zero;
+    [SerializeField] private float WarnSignTimer;
+    [SerializeField]private float _tempWarnSignTimer;
+
+    [SerializeField] private Transform _projectileSpawnPosition;
+    [SerializeField] private GameObject _projectilePrefab;
+    [SerializeField] private Quaternion _angle;
 
     private bool active = true;
     // Start is called before the first frame update
     void Start()
     {
-
-        /*if (projectileDirection == ShootDirection.DOWN || projectileDirection == ShootDirection.UP)
-        {
-            //Modify X(Horizontal)
-            pos.x = Globals.Instance.movePaceHorizontal * spawnPosition.x;
-
-            if (projectileDirection == ShootDirection.DOWN) pos.y = 5;
-            else pos.y = -5;
-
-            gameObject.transform.position = pos;
-        }
-
-        if (projectileDirection == ShootDirection.RIGHT || projectileDirection == ShootDirection.LEFT)
-        {
-            //Modify Y(Vertical)
-            pos.y = Globals.Instance.movePaceVertical * spawnPosition.y;
-
-            if (projectileDirection == ShootDirection.RIGHT) pos.x = -2.8f;
-            else pos.x = 2.8f;
-
-            gameObject.transform.position = pos;
-        }
-        */
-
-        tempFireRate = fireRate;
+        _tempFireRate = fireRate;
         RotateProjectile();
-        
+       
     }
 
     // Update is called once per frame
@@ -57,8 +35,8 @@ public class ShooterEnemy : MonoBehaviour
     {
         if (!InputManager.Instance.isControllable || !active) return;
 
-        if (tempFireRate <= 0) FireUpProjectile();
-        else tempFireRate -= Time.deltaTime;
+        if (_tempFireRate <= 0) FireUpProjectile();
+        else _tempFireRate -= Time.deltaTime;
         
     }
 
@@ -67,12 +45,12 @@ public class ShooterEnemy : MonoBehaviour
     /// </summary>
     public void FireUpProjectile()
     {
-        GameObject GO = Instantiate(projectilePrefab) as GameObject;
-        GO.transform.position = transform.position;
-        GO.transform.rotation = angle;
+        GameObject GO = Instantiate(_projectilePrefab) as GameObject;
+        GO.transform.position = _projectileSpawnPosition.position;
+        GO.transform.rotation = _angle;
 
-        GO.GetComponent<Projectile>().SetUpProjectile(2, GetMoveDirection(), projectileSpeed);
-        tempFireRate = fireRate;
+        GO.GetComponent<Projectile>().SetUpProjectile(2, GetMoveDirection(), _projectileSpeed);
+        _tempFireRate = fireRate;
 
     }
 
@@ -85,16 +63,16 @@ public class ShooterEnemy : MonoBehaviour
         switch (projectileDirection)
         {
             case ShootDirection.UP:
-                angle = Quaternion.Euler(new Vector3(0, 0, 90));
+                _angle = Quaternion.Euler(new Vector3(0, 0, 90));
                 break;
             case ShootDirection.DOWN:
-                angle = Quaternion.Euler(new Vector3(0, 0, -90));
+                _angle = Quaternion.Euler(new Vector3(0, 0, -90));
                 break;
             case ShootDirection.RIGHT:
-                angle = Quaternion.Euler(new Vector3(0, 0, 0));
+                _angle = Quaternion.Euler(new Vector3(0, 0, 0));
                 break;
             case ShootDirection.LEFT:
-                angle = Quaternion.Euler(new Vector3(0, 0, -180));
+                _angle = Quaternion.Euler(new Vector3(0, 0, -180));
                 break;
         }
         
@@ -116,11 +94,19 @@ public class ShooterEnemy : MonoBehaviour
     public void SetUpShooter(ShooterInfo info)
     {
         projectileDirection = info.shootDirection;
-        projectileSpeed = info.projectileSpeed;
+        if(projectileDirection == ShootDirection.DOWN) transform.rotation = Quaternion.Euler(0, 0, -90);
+        if(projectileDirection == ShootDirection.UP) transform.rotation = Quaternion.Euler(0, 0, 90);
+
+        _projectileSpeed = info.projectileSpeed;
 
         transform.position = info.pos;
 
-        tempFireRate = fireRate = info.fireRate;
+        _tempFireRate = fireRate = info.fireRate;
+
+    }
+
+    private void WarnSign()
+    {
 
     }
 

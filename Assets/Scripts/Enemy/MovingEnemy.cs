@@ -17,7 +17,7 @@ public class MovingEnemy : MonoBehaviour
     [SerializeField] private float waitTimer;
 
     [Header("Move Path Settings")]
-    [SerializeField] private Vector2[] _movePath;
+    [SerializeField] private ShootDirection[] _movePathEnum;
     [SerializeField] private int moveIndex = 0;
 
     #region Unity Functions
@@ -27,7 +27,7 @@ public class MovingEnemy : MonoBehaviour
         //Position the Enemy on a platform.
         //gameObject.transform.position = new Vector3(spawnPosition.x * Globals.Instance.movePaceHorizontal, (spawnPosition.y * Globals.Instance.movePaceVertical) + 0.05f, 0);
         waitTimer = Random.Range(minTime, maxTime);
-        if(_movePath.Length> 0) Timing.RunCoroutine(_MoveCoroutine().CancelWith(gameObject));
+        if(_movePathEnum.Length> 0) Timing.RunCoroutine(_MoveCoroutine().CancelWith(gameObject));
 
     }
 
@@ -53,12 +53,32 @@ public class MovingEnemy : MonoBehaviour
 
     private Vector3 GetVectorMove()
     {
+        //Rework sa enumima
         Vector3 move = new Vector2();
-        move.x += _movePath[moveIndex].x * Globals.Instance.movePaceHorizontal;
-        move.y += _movePath[moveIndex].y * Globals.Instance.movePaceVertical;
+
+        switch (_movePathEnum[moveIndex])
+        {
+            case ShootDirection.DOWN:
+                move.y = -1 * Globals.Instance.movePaceVertical;
+                break;
+
+            case ShootDirection.LEFT:
+                move.x = -1 * Globals.Instance.movePaceHorizontal;
+                transform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));
+                break;
+
+            case ShootDirection.RIGHT:
+                move.x = 1 * Globals.Instance.movePaceHorizontal;
+                transform.rotation = Quaternion.Euler(new Vector3(0, 180, 0));
+                break;
+
+            case ShootDirection.UP:
+                move.y = 1 * Globals.Instance.movePaceVertical;
+                break;
+        }
 
         moveIndex++;
-        if (moveIndex >= _movePath.Length) moveIndex = 0;
+        if (moveIndex >= _movePathEnum.Length) moveIndex = 0;
 
         waitTimer = Random.Range(minTime, maxTime);
 
@@ -66,9 +86,9 @@ public class MovingEnemy : MonoBehaviour
 
     }
 
-    public void SetUpEnemy(Vector2[] movePath)
+    public void SetUpEnemy(ShootDirection[] movePath)
     {
-        _movePath = movePath;
+        _movePathEnum = movePath;
     }
 
 }

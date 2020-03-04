@@ -20,4 +20,9 @@ public class HayPlatform : BasePlatform
         controller.IsFreeFall = false;
         controller.isDeadFromFall = false;
     }
+
+    public void SetUpParticle(GameObject particles)
+    {
+        _hayParticles = particles;
+    }
 }

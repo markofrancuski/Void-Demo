@@ -16,4 +16,8 @@ public class Heart : Interactable
         base.Interact();
     }
 
+    public void SetUpPowerUp(GameObject particleEffect)
+    {
+        _particleEffect = particleEffect;
+    }
 }

@@ -5,9 +5,10 @@ using UnityEngine;
 public class Moves : Interactable
 {
     [SerializeField] private int movesToAdd;
-    public void SetUpPowerUp(int number)
+    public void SetUpPowerUp(int number, GameObject particleEffect)
     {
         movesToAdd = number;
+        _particleEffect = particleEffect;
     }
 
     public override void Interact()

@@ -183,7 +183,15 @@ public class Level : MonoBehaviour
 
         if (explosiveEnemyPosition != null) this.explosiveEnemyInfo = explosiveEnemyPosition;
         if (shooterInfo != null) shooterEnemyInfo = shooterInfo;
-        if (movingInfo != null) movingEnemyInfo = movingInfo;
+        if (movingInfo != null)
+        {
+            movingEnemyInfo = movingInfo;
+            foreach (var info in movingEnemyInfo)
+            {
+                Debug.Log($"info.MovingPaths.Count: {info.MovingPaths.Count}");
+            }
+
+        }
 
     }
 
@@ -627,7 +635,6 @@ public class Level : MonoBehaviour
         for (int i = 0; i < explosiveEnemyInfo.Count; i++)
         {
             int index = TransformPositionToIndex(explosiveEnemyInfo[i]);
-            Debug.Log($"Index: {index}");
             GameObject go = Instantiate(explosivePrefab, transform.GetChild(index).position, Quaternion.identity);
             go.GetComponent<ExplosiveEnemy>().PlatformIndex = index;
         }
@@ -640,7 +647,7 @@ public class Level : MonoBehaviour
         {
             int index = TransformPositionToIndex(movingEnemyInfo[i].SpawnPosition);
             GameObject go = Instantiate(movingPrefab, transform.GetChild(index).position, Quaternion.identity);
-            go.GetComponent<MovingEnemy>().SetUpEnemy( ConvertToArray(movingEnemyInfo[i].MovingPaths) );
+            go.GetComponent<MovingEnemy>().SetUpEnemy( movingEnemyInfo[i].MovingPaths.ToArray() );
         }
     }
 

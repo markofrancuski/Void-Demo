@@ -16,6 +16,4 @@ public class Interactable : MonoBehaviour
     {
         if (other.CompareTag("Player")) Interact();
     }
-
-
 }

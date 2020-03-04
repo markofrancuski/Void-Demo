@@ -629,6 +629,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55938fb1577dd4ad3af7e994048c86f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1702864335
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1702864336}
+  m_Layer: 0
+  m_Name: Timing Controller
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1702864336
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1702864335}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1808215460
 GameObject:
   m_ObjectHideFlags: 0
@@ -1217,7 +1247,7 @@ MonoBehaviour:
   isSceneReady: 0
   chapterInfo:
   - levels:
-    - {fileID: 5453713709712720155, guid: 9456c8047633ded41af1d45dab4a6da5, type: 3}
+    - {fileID: 5165098423583271196, guid: d0af818bb5ea36940847f2679c179d9f, type: 3}
   - levels:
     - {fileID: 2691641086537639042, guid: 5c4eace5a82ffa324975de423489aca4, type: 3}
     - {fileID: 2206294762136142858, guid: f0dbfbf9c8a1625d9a50f987413e71a3, type: 3}

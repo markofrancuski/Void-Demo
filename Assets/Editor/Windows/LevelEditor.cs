@@ -29,12 +29,13 @@ public class LevelEditor : EditorWindow
     private bool isBossLevel;
     private ShootDirection platformLocation;
 
+    #region Enemies
     //Moving Enemy
     private bool _spawnMoving;
     //Values
-    [SerializeField] private Vector2 _movingEnemySP;
-    [SerializeField] private Vector2 _movingEnemyPath;
-    [SerializeField] private List<Vector2> _movingEnemyPaths= new List<Vector2>();
+    private Vector2 _movingEnemySP;
+    private ShootDirection _movingEnemyPath;
+    private List<ShootDirection> _movingEnemyPaths= new List<ShootDirection>();
     private List<MovingEnemyInfo> _movingEnemyInfo = new List<MovingEnemyInfo>();
 
     //Shooter Enemy
@@ -52,6 +53,8 @@ public class LevelEditor : EditorWindow
     //Values
     [SerializeField] private List<Vector2> _exploadingEnemyInfos = new List<Vector2>();
     private Vector2Int _exploadingEnemyInfo = Vector2Int.zero;
+    #endregion
+
     #endregion
 
     #region Resources
@@ -93,17 +96,22 @@ public class LevelEditor : EditorWindow
     private Texture plusFiveMovesTexture;
     private Texture reverseMovesTexture;
 
-    [SerializeField] private Texture defaultTexture;
+    private Texture defaultTexture;
 
     //Prefabs
-    [SerializeField] private GameObject timPrefab;
-    [SerializeField] private GameObject anniePrefab;
+    private GameObject timPrefab;
+    private GameObject anniePrefab;
 
     //Enemy prefabs
     private GameObject movingEnemyPrefab;
     private GameObject explodingEnemyPrefab;
     private GameObject shootingEnemyPrefab;
 
+    //Particle prefabs
+    private GameObject heartPickUpEffect;
+    private GameObject plusThreePickUpEffect;
+    private GameObject plusFivePickUpEffect;
+    private GameObject hayLandingEffect;
     #endregion
 
     #region Drop Down Variables
@@ -135,7 +143,7 @@ public class LevelEditor : EditorWindow
         platformPortalSprite = Resources.Load<Sprite>("Sprites/Platforms/PortalPlatform");
 
         coinSprite = Resources.Load<Sprite>("Sprites/Pickables/Coin");
-        heartSprite = Resources.Load<Sprite>("Sprites/Pickables/Heart 1");
+        heartSprite = Resources.Load<Sprite>("Sprites/Pickables/Heart"); //Heart 1
         weaponSprite = Resources.Load<Sprite>("Sprites/Pickables/RandomBox");
         plusFiveMovesSprite = Resources.Load<Sprite>("Sprites/Pickables/plus5");
         plusThreeMovesSprite = Resources.Load<Sprite>("Sprites/Pickables/plus3");
@@ -165,8 +173,14 @@ public class LevelEditor : EditorWindow
         explodingEnemyPrefab = Resources.Load<GameObject>("Prefabs/Enemies/Explosive Enemy");
         shootingEnemyPrefab = Resources.Load<GameObject>("Prefabs/Enemies/Shooter");
 
+
+        heartPickUpEffect = Resources.Load<GameObject>("Particles/Pickable/Heart Burst");
+        plusThreePickUpEffect = Resources.Load<GameObject>("Particles/Pickable/Plus3Moves Burst");
+        plusFivePickUpEffect = Resources.Load<GameObject>("Particles/Pickable/Plus5Moves Burst");
+        hayLandingEffect = Resources.Load<GameObject>("Particles/Hay Landing Particle");
         #endregion
 
+        #region Default values
         gridSize = 5;
 
         levelNumber = Directory.GetFiles(@"Assets/Prefabs/Level", "*.prefab").Length + 1;
@@ -175,6 +189,8 @@ public class LevelEditor : EditorWindow
         numberOfHearts = 0;
         numberOfMoves = 0;
         spawnTim = true;
+        #endregion
+
     }
 
     [MenuItem("Window/Custom Windows/LevelEditor")]
@@ -183,10 +199,13 @@ public class LevelEditor : EditorWindow
         GetWindow<LevelEditor>("Level Generator");
     }
 
+    Vector2 scrollPosition = new Vector2(750, 750);
+
     [SerializeField] private GameObject levelToLoad;
     private void OnGUI() 
     {
-
+        scrollPosition = GUILayout.BeginScrollView(scrollPosition, true, true, GUILayout.Width(650), GUILayout.Height(900));
+    
         #region Input Fields
         gridSize = EditorGUILayout.IntField("Enter Grid Size" ,gridSize);
         //saveLevelPath = EditorGUILayout.TextField(new GUIContent("Enter Path to Save", "Do not add Assets infront its already added when saving") ,saveLevelPath);
@@ -250,7 +269,7 @@ public class LevelEditor : EditorWindow
 
         GUI.color = Color.red;
         //Print the dictionary => What fields we filled up in a grid
-        if(GUILayout.Button("Debug "))
+        if(GUILayout.Button("Debug"))
         {
             /*for (int i = 0; i < _exploadingEnemyInfos.Count; i++)
             {
@@ -283,6 +302,8 @@ public class LevelEditor : EditorWindow
             //Display enemy info for editing 
             DisplayEnemyInfo();
         }
+
+        GUILayout.EndScrollView();
     }
 
     private void CreateGrid(int gridSize, float buttonSize, float spaceBetween, float posX, float posY, string boxName, float boxOffset)
@@ -349,38 +370,80 @@ public class LevelEditor : EditorWindow
         _spawnMoving = EditorGUILayout.Toggle(new GUIContent("Spawn Moving?", "Enable/Disable spawning moving enemies"), _spawnMoving);
         if(_spawnMoving)
         {
+
+            EditorGUILayout.LabelField($"Moving Enemies Added:{_movingEnemyInfo.Count}");
             _movingEnemySP = EditorGUILayout.Vector2Field("Spawn Position", _movingEnemySP);
-            _movingEnemyPath = EditorGUILayout.Vector2Field("Move Path", _movingEnemyPath);
+            _movingEnemyPath = (ShootDirection)EditorGUILayout.EnumPopup(new GUIContent("Move Direction", "Indicates in which direction should enemy go"), _movingEnemyPath);
 
-            EditorGUILayout.LabelField($"Moving Infos Amount:{_movingEnemyInfo.Count}");
-
-            foreach (var path in _movingEnemyPaths)
+            GUILayout.BeginVertical();
+            for (int i = 0; i < _movingEnemyPaths.Count; i++)
             {
-                GUILayout.Label($"Path:{path}");
+                GUILayout.BeginHorizontal();
+                GUILayout.Label($"Path[{i}]:{_movingEnemyPaths[i]}");
+
+                _movingEnemyPaths[i] = (ShootDirection)EditorGUILayout.EnumPopup(new GUIContent("Edit Direction:", "You can Edit Path Direction"), _movingEnemyPaths[i]);
+                GUILayout.EndHorizontal();
             }
+            GUILayout.EndVertical();
 
             GUILayout.BeginHorizontal();
-            GUI.color = Color.cyan;
-            if (GUILayout.Button("Add path"))
-            {
-                _movingEnemyPaths.Add(_movingEnemyPath);
-                _movingEnemyPath = Vector2.zero;
-            }
-            GUI.color = Color.white;
 
-            GUI.color = Color.yellow;
-            if (GUILayout.Button("Add Enemy"))
-            {
-                _movingEnemyInfo.Add(new MovingEnemyInfo(_movingEnemySP, _movingEnemyPaths) );
-            }
-            GUI.color = Color.white;
+            #region First Column Vertical
+                GUILayout.BeginVertical();
+                //First Column Vertical
+                    //Add Path Button
+                    GUI.color = Color.cyan;
+                    if (GUILayout.Button("Add path"))
+                    {
+                        _movingEnemyPaths.Add(_movingEnemyPath);
+                    }
+                    GUI.color = Color.white;
 
-            GUI.color = Color.red;
-            if (GUILayout.Button("Remove Last Path"))
-            {
-                if(_movingEnemyPaths.Count > 0) _movingEnemyPaths.Remove(_movingEnemyPaths[_movingEnemyPaths.Count-1]);
-            }
-            GUI.color = Color.white;
+                    GUI.color = Color.yellow;
+                    //Add Enemy Button
+                    if (GUILayout.Button("Add Enemy"))
+                    {
+                        List<ShootDirection> tempList = new List<ShootDirection>(_movingEnemyPaths);
+
+                        _movingEnemyInfo.Add(new MovingEnemyInfo(_movingEnemySP, tempList));
+                        _movingEnemyPaths.Clear();
+                    }
+                    GUI.color = Color.white;
+                GUILayout.EndVertical();
+            #endregion
+
+            #region Second Column Vertical
+            GUILayout.BeginVertical();
+                    //Second Column Vertical
+                    GUI.color = Color.red;
+                    //Removes the last added Enemy in
+                    if (GUILayout.Button("Remove Last"))
+                            {
+                                if (_movingEnemyInfo.Count > 0) _movingEnemyInfo.Remove(_movingEnemyInfo[_movingEnemyInfo.Count - 1]);
+                            }
+                    GUI.color = Color.white;
+                    if(GUILayout.Button("Reset Values"))
+                    {
+                        ResetMovingValues();
+                    }
+                    //Remove Last Path Button
+                    if (GUILayout.Button("Clear Last Path"))
+                    {
+                        if (_movingEnemyPaths.Count > 0) _movingEnemyPaths.Remove(_movingEnemyPaths[_movingEnemyPaths.Count - 1]);
+                    }
+                    //Clears All Paths
+                    if (GUILayout.Button("Clear All Paths"))
+                            {
+                                _movingEnemyPaths.Clear();
+                            }
+                    //Clears all Enemies
+                    if (GUILayout.Button("Clear All Enemies"))
+                                {
+                                    _movingEnemyInfo.Clear();
+                                }
+                GUILayout.EndVertical();
+            #endregion
+
             GUILayout.EndHorizontal();
         }
 
@@ -388,25 +451,42 @@ public class LevelEditor : EditorWindow
         _spawnExploding = EditorGUILayout.Toggle(new GUIContent("Spawn Exploading?", "Enable/Disable spawning exploding enemies"), _spawnExploding);
         if (_spawnExploding)
         {
-            _exploadingEnemyInfo= EditorGUILayout.Vector2IntField("", _exploadingEnemyInfo);
+            EditorGUILayout.LabelField($"Exploading Enemies Added:{_exploadingEnemyInfos.Count}");
 
-            EditorGUILayout.LabelField($"Exploading Infos Amount:{_exploadingEnemyInfos.Count}");
+            _exploadingEnemyInfo = EditorGUILayout.Vector2IntField("", _exploadingEnemyInfo);
 
             GUILayout.BeginHorizontal();
 
-            GUI.color = Color.yellow;
-            if (GUILayout.Button("Add Enemy"))
-            {
-                _exploadingEnemyInfos.Add(_exploadingEnemyInfo);
-            }
-            GUI.color = Color.white;
+            #region First Column Vertical
+                GUILayout.BeginVertical();
+                    GUI.color = Color.yellow;
+                    if (GUILayout.Button("Add Enemy"))
+                    {
+                        _exploadingEnemyInfos.Add(_exploadingEnemyInfo);
+                    }
+                    GUI.color = Color.white;
+                GUILayout.EndVertical();
+            #endregion
 
-            GUI.color = Color.red;
-            if (GUILayout.Button("Remove Last"))
-            {
-                _exploadingEnemyInfos.Remove(_exploadingEnemyInfos[_exploadingEnemyInfos.Count - 1]);
-            }
-            GUI.color = Color.white;
+            #region Second Column Vertical
+            GUILayout.BeginVertical();
+
+                    GUI.color = Color.red;
+                    if (GUILayout.Button("Remove Last"))
+                    {
+                        _exploadingEnemyInfos.Remove(_exploadingEnemyInfos[_exploadingEnemyInfos.Count - 1]);
+                    }
+                    GUI.color = Color.white;
+                    if (GUILayout.Button("Reset Value"))
+                    {
+                         ResetExploadingValues();
+                    }
+                    if (GUILayout.Button("Clear All Enemies"))
+                    {
+                        _exploadingEnemyInfos.Clear();
+                    }
+                GUILayout.EndVertical();
+            #endregion
 
             GUILayout.EndHorizontal();
         }
@@ -415,43 +495,84 @@ public class LevelEditor : EditorWindow
         _spawnShooting = EditorGUILayout.Toggle(new GUIContent("Spawn Shooting?", "Enable/Disable spawning shooting enemies"), _spawnShooting);
         if (_spawnShooting)
         {
+            EditorGUILayout.LabelField($"Shooter Enemies Added: {_shooterEnemyInfos.Count}");
+
             _shooterDirection = (ShootDirection) EditorGUILayout.EnumPopup(new GUIContent("Projectile direction", "Towards which direction bullets will go(if its Left) that means enemy will be placed on right side of the screen"), _shooterDirection);
             _shooterPosition = EditorGUILayout.IntField("Spawn position", _shooterPosition);
             _shooterFireRate = EditorGUILayout.FloatField("Fire Rate", _shooterFireRate);
             _shooterProjectileSpeed = EditorGUILayout.FloatField("Projectile Speed", _shooterProjectileSpeed);
-
-            EditorGUILayout.LabelField($"Shooter Infos Amount: {_shooterEnemyInfos.Count}");
-
-            GUI.color = Color.yellow;
+       
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Add Enemy"))
-            {
-                ShooterInfo _shooterInfo = new ShooterInfo(_shooterDirection, _shooterFireRate, _shooterProjectileSpeed, _shooterPosition);
 
-                _shooterEnemyInfos.Add(_shooterInfo);
-            }
-            GUI.color = Color.white;
+            #region First Column Vertical
+                GUILayout.BeginVertical();
+                    GUI.color = Color.yellow;
+                    if (GUILayout.Button("Add Enemy"))
+                    {
+                        ShooterInfo _shooterInfo = new ShooterInfo(_shooterDirection, _shooterFireRate, _shooterProjectileSpeed, _shooterPosition);
 
-            GUI.color = Color.red;
-            if (GUILayout.Button("Remove Last"))
-            {
-                if(_shooterEnemyInfos.Count > 0) _shooterEnemyInfos.Remove(_shooterEnemyInfos[_shooterEnemyInfos.Count - 1]);
-            }
-            GUI.color = Color.white;
+                        _shooterEnemyInfos.Add(_shooterInfo);
+                        ResetShooterValues();
+                    }
+                    GUI.color = Color.white;
+                GUILayout.EndVertical();
+            #endregion
+
+            #region First Column Vertical
+
+            GUILayout.BeginVertical();
+                    GUI.color = Color.red;
+                    if (GUILayout.Button("Remove Last"))
+                    {
+                        if (_shooterEnemyInfos.Count > 0) _shooterEnemyInfos.Remove(_shooterEnemyInfos[_shooterEnemyInfos.Count - 1]);
+                    }
+                    GUI.color = Color.white;
+                    if (GUILayout.Button("Reset Values"))
+                    {
+                        ResetShooterValues();
+                    }
+                    if (GUILayout.Button("Clear All Enemies"))
+                    {
+                        _shooterEnemyInfos.Clear();
+                    }
+                GUILayout.EndVertical();
+            #endregion
+
             GUILayout.EndHorizontal();
         }
     }
 
+    #region Reset Values
     private void ResetVariables()
     {
         _movingEnemyInfo.Clear();
         _movingEnemyPaths.Clear();
         _exploadingEnemyInfos.Clear();
         _shooterEnemyInfos.Clear();
-        _shooterFireRate = _shooterProjectileSpeed = _shooterPosition = 0;
 
+        ResetShooterValues();
+        ResetExploadingValues();
+        ResetMovingValues();
 
     }
+
+    private void ResetShooterValues()
+    {
+        _shooterDirection = ShootDirection.DOWN;
+        _shooterFireRate = _shooterProjectileSpeed = _shooterPosition = 0;
+    }
+
+    private void ResetExploadingValues()
+    {
+        _exploadingEnemyInfo = Vector2Int.zero;
+    }
+
+    private void ResetMovingValues()
+    {
+        _movingEnemySP = Vector2.zero;
+        _movingEnemyPath = ShootDirection.DOWN;
+    }
+    #endregion
 
     private void SpawnLevel()
     {
@@ -523,6 +644,7 @@ public class LevelEditor : EditorWindow
         }
         else
         {
+            
             parentObject.GetComponent<Level>().SetUpLevel(tempList, numberOfHearts, numberOfMoves, gridSize, prefabs, positions, _exploadingEnemyInfos, _shooterEnemyInfos, _movingEnemyInfo);
             SaveAndDestroyPrefab();
         }
@@ -545,7 +667,7 @@ public class LevelEditor : EditorWindow
         switch (pickableType)
         {
             case PickableType.HEART:
-                go.AddComponent<Heart>();
+                go.AddComponent<Heart>().SetUpPowerUp(heartPickUpEffect);
                 break;
             case PickableType.COIN:
                 go.AddComponent<Coin>();
@@ -556,11 +678,11 @@ public class LevelEditor : EditorWindow
 
             case PickableType.MOVE_3: 
                 script = go.AddComponent<Moves>();
-                script.SetUpPowerUp(3);
+                script.SetUpPowerUp(3, plusThreePickUpEffect);
                 break;
             case PickableType.MOVE_5:
                  script = go.AddComponent<Moves>();
-                script.SetUpPowerUp(5);
+                script.SetUpPowerUp(5, plusFivePickUpEffect);
                 break;
 
             case PickableType.MOVE_REVERSE: 
@@ -586,6 +708,8 @@ public class LevelEditor : EditorWindow
                 break;
             case PlatformType.HAY:
                 script = go.AddComponent<HayPlatform>();
+                go.GetComponent<HayPlatform>().SetUpParticle(hayLandingEffect);
+
                 if (isBossLevel) script.SetUpPlatformForBoss(platformLocation);
                 break;
             case PlatformType.SPIKE:

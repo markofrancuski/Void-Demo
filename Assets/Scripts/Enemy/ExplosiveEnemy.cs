@@ -2,15 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 using MEC;
+using Pixelplacement;
 
 public class ExplosiveEnemy : MonoBehaviour
 {
+    [SerializeField] private GameObject _particleExplosion;
     [SerializeField] private bool hasBeenTouched;
     public float exploadTimer = 3f;
 
     [SerializeField] private Vector2 spawnPosition;
     [SerializeField] private Vector2 movePosition;
-    private Vector3 scaleVector = new Vector3(0, 0.1f, 0);
+    private Vector3 scaleVector = new Vector3(0.1f, 0.1f, 0);
     private Vector3 moveVector = new Vector3(0, 0.05f, 0);
 
     [SerializeField] private List<BasePlatform> _surrondingPlatforms;
@@ -75,11 +77,9 @@ public class ExplosiveEnemy : MonoBehaviour
         {
             Debug.Log("Starting Timer ");
             hasBeenTouched = true;
-            //Invoke("Expload", exploadTimer);
             StartTicking();
         }
     }
-
     private void OnBecameInvisible()
     {
         Destroy(gameObject);
@@ -87,31 +87,10 @@ public class ExplosiveEnemy : MonoBehaviour
 
     #endregion
 
-    private IEnumerator<float> _StartTimer()
+    public void StartTicking()
     {
-        //Wait for 'X' seconds
-        float tempTimer = exploadTimer;
-
-        while(tempTimer > 0)
-        {
-            Debug.Log("Ticking timer: " + tempTimer);
-            gameObject.transform.localScale += scaleVector;
-            gameObject.transform.localPosition += moveVector;
-            //Scale Enemy
-            yield return Timing.WaitForSeconds(1f);         
-            tempTimer -= 1f;
-        }
-        
-        //Expload
-        //Destroy all surrounding platforms(UP, DOWN, LEFT, RIGHT)
-        Expload();
-
+        Tween.LocalScale(transform, transform.localScale, transform.localScale + scaleVector * exploadTimer, exploadTimer, 0, null, Tween.LoopType.None, null, Expload);
     }
-
-    /// <summary>
-    /// Run the Coroutine that ticks every second and scales the enemy, after 3rd tick it explodes;
-    /// </summary>
-    public void StartTicking() => Timing.RunCoroutine(_StartTimer().CancelWith(gameObject));
 
     void Expload()
     {
