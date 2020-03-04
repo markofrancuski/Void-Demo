@@ -59,15 +59,16 @@ public class ExplosiveEnemy : MonoBehaviour
         }
     }
 
+
     private void Update()
     {
 #if UNITY_EDITOR
-        Debug.DrawRay(transform.position, Vector2.up * Globals.Instance.movePaceVertical, Color.red);
+        Debug.DrawRay(transform.position, Vector2.up * Globals.Instance.movePaceVertical, Color.red); //vertical
 
-        Debug.DrawRay(transform.position, Vector2.down * Globals.Instance.movePaceVertical, Color.red);
+        Debug.DrawRay(transform.position, Vector2.down * Globals.Instance.movePaceVertical, Color.red); //vertical
 
-        Debug.DrawRay(transform.position + new Vector3(0f, -0.55f, 0f), Vector2.right * Globals.Instance.movePaceHorizontal, Color.red);
-        Debug.DrawRay(transform.position + new Vector3(0f, -0.55f, 0f), Vector2.left * Globals.Instance.movePaceHorizontal, Color.red);
+        Debug.DrawRay(transform.position + new Vector3(0f, -0.4f, 0f), Vector2.right * Globals.Instance.movePaceHorizontal, Color.red); //horizontal
+        Debug.DrawRay(transform.position + new Vector3(0f, -0.4f, 0f), Vector2.left * Globals.Instance.movePaceHorizontal, Color.red); //horizontal
 #endif
     }
 
@@ -96,10 +97,10 @@ public class ExplosiveEnemy : MonoBehaviour
     {
         //Play Particle System
 
-        Debug.Log($"Enemy {gameObject.name} Exploaded!");
+        Debug.Log($"Enemy {gameObject.name} Exploded!");
         foreach (var platform in _surrondingPlatforms)
         {
-            platform.DestroyObject();
+            if(platform.gameObject.activeInHierarchy) platform.DestroyObject();
         }
 
         Destroy(gameObject);

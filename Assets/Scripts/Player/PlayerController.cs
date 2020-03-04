@@ -542,12 +542,11 @@ public class PlayerController : Person, IDestroyable
     }
     
     #endregion
-
-
     #region INTERFACE IMPLEMENTATION
 
     public void DestroyObject()
     {
+        if (currentState == PersonState.DEAD) return;
         if(!isProtected) Death("DestroyObject");
     }
 

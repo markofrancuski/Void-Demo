@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class MovingEnemyCollision : MonoBehaviour
 {
-    private void OnCollisionEnter2D(Collision2D collision)
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
-            collision.gameObject.GetComponent<IDestroyable>().DestroyObject();
+
+            collision.gameObject.transform.parent.GetComponent<IDestroyable>().DestroyObject();
         }
     }
 }

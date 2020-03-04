@@ -699,7 +699,7 @@ public class LevelEditor : EditorWindow
         BasePlatform script;
         SlidePlatform scriptSlide;
         go.layer = 8;
-        go.GetComponent<BoxCollider2D>().size = new Vector2(1, 0.5f);
+        go.GetComponent<BoxCollider2D>().size = new Vector2(1, 0.15f);
         switch (platformType)
         {
             case PlatformType.NORMAL:
