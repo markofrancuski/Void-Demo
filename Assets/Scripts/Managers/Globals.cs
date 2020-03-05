@@ -6,6 +6,9 @@ using System;
 
 public class Globals : Singleton<Globals>
 {
+    [Header("Sound Settings")]
+    public bool SoundOn;
+
     [Header("Movement Values")]
     /// <summary>
     /// Value that shows how much you move on Vertical Axis.

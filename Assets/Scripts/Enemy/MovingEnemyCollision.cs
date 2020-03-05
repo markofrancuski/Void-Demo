@@ -10,7 +10,7 @@ public class MovingEnemyCollision : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
 
-            collision.gameObject.transform.parent.GetComponent<IDestroyable>().DestroyObject();
+            collision.gameObject.transform.parent.GetComponent<IDestroyable>().DestroyObject("Moving Enemy");
         }
     }
 }

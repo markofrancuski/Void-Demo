@@ -36,9 +36,9 @@ public class BreakablePlatform : BasePlatform, IDestroyable
         }
     }
 
-    public override void DestroyObject()
+    public override void DestroyObject(string from)
     {
-        base.DestroyObject();
+        base.DestroyObject(from);
         Debug.Log("Destroying Breakable platform");
         EnterFreeFall();
         gameObject.SetActive(false);

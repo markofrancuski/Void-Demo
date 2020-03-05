@@ -544,10 +544,9 @@ public class PlayerController : Person, IDestroyable
     #endregion
     #region INTERFACE IMPLEMENTATION
 
-    public void DestroyObject()
+    public void DestroyObject(string from)
     {
-        if (currentState == PersonState.DEAD) return;
-        if(!isProtected) Death("DestroyObject");
+        if(!isProtected) Death(from);
     }
 
     #endregion
@@ -568,6 +567,7 @@ public class PlayerController : Person, IDestroyable
     
     public override void Death(string txt)
     {
+        if (currentState == PersonState.DEAD) return;
         /*if(InputManager.Instance.isControllable)
         {
             InputManager.Instance.UnControlPlayer();

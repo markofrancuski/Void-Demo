@@ -62,7 +62,7 @@ public class AI : Person, IDestroyable
         Tween.Position(gameObject.transform, gameObject.transform.position + Vector3.up, .5f, 0, Tween.EaseInOutStrong, Tween.LoopType.None, HandleTweenStarted, HandleTweenFinished);
     }
 
-    public void DestroyObject()
+    public void DestroyObject(string from)
     {
         Debug.Log($"AI is dead!");
         gameObject.SetActive(false);

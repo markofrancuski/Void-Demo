@@ -25,51 +25,49 @@ public class ExplosiveEnemy : MonoBehaviour
 
         //Get surronding platforms
         Level lvl = Globals.Instance.levelGO.GetComponent<Level>();
-        
-        //Ray Up
+
+        //Current Platform
+        if (PlatformIndex >= 0)
+        {
+            GameObject go = lvl.transform.GetChild(PlatformIndex).GetChild(1).gameObject;
+            if (go.name == "Platform")
+                _surrondingPlatforms.Add(go.GetComponent<BasePlatform>());
+        }
+        //Platform Up
         int index = PlatformIndex - lvl.GridSize;
         if (index >= 0)
         {
-            if (lvl.transform.GetChild(index).GetChild(1).gameObject.activeInHierarchy)
-                _surrondingPlatforms.Add(lvl.transform.GetChild(index).GetChild(1).GetComponent<BasePlatform>());
+            GameObject go = lvl.transform.GetChild(index).GetChild(1).gameObject;
+            if (go.name == "Platform")
+                _surrondingPlatforms.Add(go.GetComponent<BasePlatform>());
         }
-        
-        //Ray Down
+
+        //Platform Down
         index = PlatformIndex + lvl.GridSize;
         if(index <= Mathf.Pow(lvl.GridSize,2))
         {
-            if (lvl.transform.GetChild(index).GetChild(1).gameObject.activeInHierarchy)
-                _surrondingPlatforms.Add(lvl.transform.GetChild(index).GetChild(1).GetComponent<BasePlatform>());
+            GameObject go = lvl.transform.GetChild(index).GetChild(1).gameObject;
+            if (go.name == "Platform")
+                _surrondingPlatforms.Add(go.GetComponent<BasePlatform>());
         }
 
-        //Ray Left
+        //Platform Left
         index = PlatformIndex - 1;
         if (index % 5 != 0 && index >= 0)
         {
-            if(lvl.transform.GetChild(index).GetChild(1).gameObject.activeInHierarchy)
-                _surrondingPlatforms.Add( lvl.transform.GetChild(index).GetChild(1).GetComponent<BasePlatform>() );
+            GameObject go = lvl.transform.GetChild(index).GetChild(1).gameObject;
+            if (go.name == "Platform")
+                _surrondingPlatforms.Add(go.GetComponent<BasePlatform>() );
         }
-        
-        //Ray Right
+
+        //Platform Right
         index = PlatformIndex + 1;
         if (index % 4 != 0 && index < Mathf.Pow(lvl.GridSize, 2))
         {
-            if (lvl.transform.GetChild(index).GetChild(1).gameObject.activeInHierarchy)
-                _surrondingPlatforms.Add(lvl.transform.GetChild(index).GetChild(1).GetComponent<BasePlatform>());
+            GameObject go = lvl.transform.GetChild(index).GetChild(1).gameObject;
+            if (go.name == "Platform")
+                _surrondingPlatforms.Add(go.GetComponent<BasePlatform>());
         }
-    }
-
-
-    private void Update()
-    {
-#if UNITY_EDITOR
-        Debug.DrawRay(transform.position, Vector2.up * Globals.Instance.movePaceVertical, Color.red); //vertical
-
-        Debug.DrawRay(transform.position, Vector2.down * Globals.Instance.movePaceVertical, Color.red); //vertical
-
-        Debug.DrawRay(transform.position + new Vector3(0f, -0.4f, 0f), Vector2.right * Globals.Instance.movePaceHorizontal, Color.red); //horizontal
-        Debug.DrawRay(transform.position + new Vector3(0f, -0.4f, 0f), Vector2.left * Globals.Instance.movePaceHorizontal, Color.red); //horizontal
-#endif
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -97,10 +95,9 @@ public class ExplosiveEnemy : MonoBehaviour
     {
         //Play Particle System
 
-        Debug.Log($"Enemy {gameObject.name} Exploded!");
         foreach (var platform in _surrondingPlatforms)
         {
-            if(platform.gameObject.activeInHierarchy) platform.DestroyObject();
+            if(platform.gameObject.activeInHierarchy) platform.DestroyObject("Explosion");
         }
 
         Destroy(gameObject);

@@ -160,9 +160,9 @@ public class BasePlatform : MonoBehaviour, IParentPlayer, IUnParentPlayer, IDest
     #region Interface
 
     //If Player is on this platform and gets destroyed => enter free fall
-    public virtual void DestroyObject()
+    public virtual void DestroyObject(string from)
     {
-        if (_controller != null) _controller.Death("the explosion!");
+        if (_controller != null) _controller.Death(from);
         //OnRecalculateDistanceEvent?.Invoke();
         //OnFreeFallPlayerHandler?.Invoke();
     }

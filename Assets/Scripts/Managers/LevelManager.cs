@@ -337,6 +337,8 @@ public class LevelManager : MonoBehaviour
         //print("maxHealth: " + maxHealth + " amount: " + amount + " fillAmount: " + amount / maxHealth);
         _bossHealthImage.fillAmount =  (float) amount / maxHealth;
     }
+    
+
     #endregion
 
 }

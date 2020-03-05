@@ -5,6 +5,6 @@ using UnityEngine;
 public interface IDestroyable
 {
 
-    void DestroyObject();
+    void DestroyObject(string from);
 
 }
