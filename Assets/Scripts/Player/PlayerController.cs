@@ -164,29 +164,30 @@ public class PlayerController : Person, IDestroyable
 
             if (movementList.Count != 0 && currentState == PersonState.IDLE && !IsFreeFall && !hasInteracatedWithSlide)
             {
-                //if (InputManager.Instance.isControllable)
-                //{
 
                 Vector3 _pos = GetMovement(movementList[0]);
+                nextPosition = _pos;
+                MovePlayer();
+                Timing.RunCoroutine(_WaitForHalfOfTweenCoroutine().CancelWith(gameObject));
+                //Wait Tween duration
+                yield return new WaitForSeconds(Globals.Instance.tweenDuration);
 
-                if (ValidateBoundary(_pos) )
+                /*if (ValidateBoundary(_pos) )
                 {
                     nextPosition = _pos;
                     MovePlayer();
                     Timing.RunCoroutine(_WaitForHalfOfTweenCoroutine().CancelWith(gameObject));
                     //Wait Tween duration
                     yield return new WaitForSeconds(Globals.Instance.tweenDuration);
-                }
-                else
+                }*/
+                /*else
                 {
                     Timing.RunCoroutine(_WaitForHalfOfTweenCoroutine().CancelWith(gameObject));
                     yield return new WaitForSeconds(Globals.Instance.tweenDuration); // or wait one frame 
                     HandleTweenFinished();
                 }
+                */
 
-                //}
-                ////Cancel the chain movement
-                //else movementList.Clear();
 
             }
             yield return new WaitUntil(() => currentState == PersonState.IDLE);
