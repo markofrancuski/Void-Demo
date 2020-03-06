@@ -83,6 +83,8 @@ public class BasePlatform : MonoBehaviour, IParentPlayer, IUnParentPlayer, IDest
         if (collision.collider.CompareTag("Player"))
         {
             _controller = collision.collider.transform.parent.GetComponent<Person>();
+
+            if (type == PlatformType.SLIME && _controller.IsFreeFall) return;
             //ParentPlayer(_controller);
             StartCoroutine(_WaitForIdle(_controller));
         }

@@ -43,7 +43,6 @@ public class SlimePlatform : BasePlatform
         InputManager.OnSwipedEvent -= OnSwiped;
 
     }
-
     #endregion
 
     private void FreezePlayer(Person controller)

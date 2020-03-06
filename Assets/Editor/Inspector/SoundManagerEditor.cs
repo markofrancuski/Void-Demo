@@ -12,7 +12,8 @@ public class SoundManagerEditor : Editor
 
     List<SoundInfo> infos = new List<SoundInfo>();
 
-    public string Key;
+    public string FileName = string.Empty;
+    public string Key = string.Empty;
     public List<AudioClip> audioClips = new List<AudioClip>();
     public AudioClip clip;
 
@@ -73,9 +74,10 @@ public class SoundManagerEditor : Editor
 
         GUILayout.EndHorizontal();
 
+        FileName = EditorGUILayout.TextField("Enter File Name", FileName);
         Key = EditorGUILayout.TextField("Choose your key",Key);
 
-        clip = EditorGUILayout.ObjectField("Choose Prefab Level to Edit", clip, typeof(AudioClip), false) as AudioClip;
+        clip = EditorGUILayout.ObjectField("Choose Sound Clip", clip, typeof(AudioClip), false) as AudioClip;
 
         /*if (GUILayout.Button("Expload"))
         {
@@ -99,12 +101,17 @@ public class SoundManagerEditor : Editor
 
     private void CreateNewScriptable(string Key, AudioClip[] clips)
     {
-
-        SoundInfo sound = CreateInstance<SoundInfo>();
+        SoundInfo sound = Editor.CreateInstance<SoundInfo>();
         sound.SetUpValues(Key, clips);
 
-        AssetDatabase.CreateAsset(sound, "Assets/Resources/Scriptable/"+SAVE_PATH);
+        AssetDatabase.CreateAsset(sound, $"Assets/Resources/Scriptable/{FileName}.asset");
+        //EditorUtility.SetDirty(sound);
+        AssetDatabase.SaveAssets();
+        AssetDatabase.Refresh();
 
+
+
+        //
     }
 }
 

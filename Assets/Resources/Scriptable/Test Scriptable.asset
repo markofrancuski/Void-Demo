@@ -10,7 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: Sound Info
+  m_Name: Test Scriptable
   m_EditorClassIdentifier: Assembly-CSharp::SoundInfo
-  Key: 
-  Clips: []
+  Key: Key 2
+  Clips:
+  - {fileID: 8300000, guid: 257d310e55480d042ac40b3b33d3fec1, type: 3}
+  - {fileID: 8300000, guid: 7531de682f8c4b04384e4f82f72d0f22, type: 3}
+  - {fileID: 8300000, guid: 14aa86f6ae9015840b3d4219dad3c012, type: 3}
